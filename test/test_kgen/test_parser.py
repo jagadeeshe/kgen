@@ -114,6 +114,22 @@ class parserTest(unittest.TestCase):
         self.assertEqual('bcdf', mockAST.subsets['C'])
 
 
+    def test_p_pairlist(self):
+        data = '''
+            PAIRS b c d +
+                  b c d 0
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(4, len(mockAST.pairs))
+        self.assertTrue(mockAST.pairs.has_key(('b', 'b')))
+        self.assertTrue(mockAST.pairs.has_key(('c', 'c')))
+        self.assertTrue(mockAST.pairs.has_key(('d', 'd')))
+        self.assertTrue(mockAST.pairs.has_key(('+', '0')))
+
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,6 +13,7 @@ class MockAST:
         self.opt_eol_empty = 0
         self.kimmo_comments = []
         self.subsets = {}
+        self.pairs = {}
     
     def r_error(self):
         self.error += 1
@@ -37,3 +38,7 @@ class MockAST:
     
     def r_subset(self, subset):
         self.subsets[subset[0]] = subset[1]
+    
+    def r_pair(self, s1, s2):
+        for i in range(len(s1)):
+            self.pairs[(s1[i], s2[i])] = True
