@@ -1,0 +1,109 @@
+'''
+Created on May 5, 2011
+
+@author: jagadeesh
+'''
+
+from ply import yacc
+import core
+
+"""
+Example rules:  (blanks are ignored)
+
+      SUBSET V      a e i o u
+      SUBSET Vhigh  i u
+      PAIRS  tcdkk
+             tcdkg
+      c:t => _ i:i
+      c:t <= x:X (z [ f | :g | h: ]) _
+      c:t \<= x _
+      c:t <=> _ m '
+
+"""
+
+class KgenParser:
+
+    ''' This is required '''    
+    tokens = core.tokens
+
+    start = 'ruleset'
+
+    def __init__(self, klexer, ast, **kwargs):
+        self.klexer = klexer
+        self.ast = ast
+        self.parser = yacc.yacc(module=self, **kwargs)
+
+    def p_error(self, p):
+        self.ast.r_error()
+
+    def p_empty(self, p):
+        '''empty : '''
+        pass
+
+    def p_ruleset(self, p):
+        'ruleset : kimmo_comments subsets'
+        self.ast.r_ruleset()
+
+    def p_kimmo_comments_list(self, p):
+        'kimmo_comments : kimmo_comments kimmo_comment'
+        self.ast.r_kimmo_comment(p[2])
+
+    def p_kimmo_comments_empty(self, p):
+        'kimmo_comments : empty opt_eol'
+        pass
+
+    def p_kimmo_comment(self, p):
+        'kimmo_comment :  KIMMO_COMMENT eol'
+        p[0] = p[1]
+
+    def p_eol_term(self, p):
+        'eol : EOL'
+        self.ast.r_eol_term()
+
+    def p_eol(self, p):
+        'eol : eol EOL'
+        self.ast.r_eol_term()
+
+    def p_opt_eol_empty(self, p):
+        'opt_eol : empty'
+        self.ast.r_opt_eol_empty()
+
+    def p_opt_eol(self, p):
+        'opt_eol : eol'
+        self.ast.r_opt_eol()
+
+    def p_subsets(self, p):
+        'subsets : subsets subset'
+        self.ast.r_subset(p[2])
+
+    def p_subsets_empty(self, p):
+        'subsets : empty'
+        pass
+
+    def p_subset(self, p):
+        'subset : SUBSET SUBSET_NAME segment_string EOL kimmo_comments'
+        if self.ast.has_subset_name(p[2]):
+            # TODO: has semantic error: redeclared
+            pass
+        p[0] = (p[2], p[3])
+
+    def p_segment_string_oneseg(self, p):
+        'segment_string : oneseg'
+        p[0] = p[1]
+
+    def p_segment_string_expr(self, p):
+        'segment_string : segment_string oneseg'
+        p[0] = p[1] + p[2]
+
+    def p_oneseg(self, p):
+        'oneseg : SEGMENT'
+        p[0] = p[1]
+
+
+    def parse(self, input, ast=None):
+        if ast:
+            self.ast = ast
+        
+        self.parser.parse(input=input, lexer=self.klexer.lexer)
+        
+
