@@ -14,6 +14,8 @@ class MockAST:
         self.kimmo_comments = []
         self.subsets = {}
         self.pairs = {}
+        self.lhs = None
+        self.operator = ''
     
     def r_error(self):
         self.error += 1
@@ -42,3 +44,9 @@ class MockAST:
     def r_pair(self, s1, s2):
         for i in range(len(s1)):
             self.pairs[(s1[i], s2[i])] = True
+    
+    def r_lhs(self, pair):
+        self.lhs = pair
+    
+    def r_operator(self, op):
+        self.operator = op

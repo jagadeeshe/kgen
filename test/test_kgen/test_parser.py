@@ -130,6 +130,53 @@ class parserTest(unittest.TestCase):
         self.assertTrue(mockAST.pairs.has_key(('+', '0')))
 
 
+    def test_p_rule_only_occurs(self):
+        data = '''RULE 
+            p:b => 
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(('p', 'b'), mockAST.lhs)
+        self.assertEqual('=>', mockAST.operator)
+
+
+    def test_p_rule_always_occurs(self):
+        data = '''RULE 
+            p:b <= 
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(('p', 'b'), mockAST.lhs)
+        self.assertEqual('<=', mockAST.operator)
+
+
+    def test_p_rule_never_occurs(self):
+        data = '''RULE 
+            p:b /<= 
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(('p', 'b'), mockAST.lhs)
+        self.assertEqual('/<=', mockAST.operator)
+
+
+    def test_p_rule_only_and_always_occurs(self):
+        data = '''RULE 
+            p:b <=> 
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(('p', 'b'), mockAST.lhs)
+        self.assertEqual('<=>', mockAST.operator)
+
 
 if __name__ == "__main__":
     unittest.main()

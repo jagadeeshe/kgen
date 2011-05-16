@@ -41,7 +41,7 @@ class KgenParser:
         pass
 
     def p_ruleset(self, p):
-        'ruleset : kimmo_comments subsets pairs'
+        'ruleset : kimmo_comments subsets pairs rules'
         self.ast.r_ruleset()
 
     def p_kimmo_comments_list(self, p):
@@ -111,6 +111,37 @@ class KgenParser:
         '''pairlist : PAIRS opt_eol segment_string EOL segment_string EOL'''
         self.ast.r_pair(p[3], p[5])
 
+    def p_rules_term(self, p):
+        '''rules : empty'''
+        pass
+
+    def p_rules_list(self, p):
+        '''rules : rules rule'''
+        pass
+
+    def p_rule(self, p):
+        '''rule : RULE opt_eol lhs_pair rule_operator rhs EOL kimmo_comments'''
+        self.ast.r_lhs(p[3])
+        self.ast.r_operator(p[4])
+
+    def p_lhs_pair(self, p):
+        '''lhs_pair : segment COLON segment'''
+        p[0] = (p[1], p[3])
+
+    def p_rule_operator(self, p):
+        '''rule_operator : ONLY_OCCURS
+                         | ALWAYS_OCCURS
+                         | ALWAYS_AND_ONLY_OCCURS
+                         | NEVER_OCCURS'''
+        p[0] = p[1]
+
+    def p_rhs(self, p):
+        '''rhs : empty'''
+        pass
+
+    def p_segment(self, p):
+        '''segment : SEGMENT'''
+        p[0] = p[1]
 
     def parse(self, input, ast=None):
         if ast:
