@@ -188,6 +188,10 @@ class KgenParser:
         'segment_pair : segment'
         p[0] = (p[1], p[1])
 
+    def p_segment_pair_segment_any(self, p):
+        'segment_pair : segment COLON'
+        p[0] = (p[1], '@')
+
     def parse(self, input, ast=None):
         if ast:
             self.ast = ast
