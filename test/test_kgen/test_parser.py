@@ -130,6 +130,17 @@ class parserTest(unittest.TestCase):
         self.assertTrue(mockAST.pairs.has_key(('+', '0')))
 
 
+    def test_p_lhs_pair(self):
+        data = '''RULE 
+            p:b => a _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(('p', 'b'), mockAST.lhs)
+
+
     def test_p_rule_only_occurs(self):
         data = '''RULE 
             p:b => a _ b
@@ -138,10 +149,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual(('p', 'b'), mockAST.lhs)
         self.assertEqual('=>', mockAST.operator)
-        self.assertEqual([([('a', 'a')], [('b', 'b')])], mockAST.rhs)
-
 
 
     def test_p_rule_only_occurs_left_context(self):
@@ -152,9 +160,9 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual(('p', 'b'), mockAST.lhs)
         self.assertEqual('=>', mockAST.operator)
-        self.assertEqual([([('a', 'a')], None)], mockAST.rhs)
+        self.assertEqual([('a', 'a')], mockAST.lc)
+        self.assertEqual(None, mockAST.rc)
 
 
     def test_p_rule_only_occurs_right_context(self):
@@ -165,48 +173,75 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual(('p', 'b'), mockAST.lhs)
         self.assertEqual('=>', mockAST.operator)
-        self.assertEqual([(None, [('a', 'a')])], mockAST.rhs)
+        self.assertEqual([('a', 'a')], mockAST.rc)
+        self.assertEqual(None, mockAST.lc)
 
 
     def test_p_rule_always_occurs(self):
         data = '''RULE 
-            p:b <= a _ b
+            p:b <= a _
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual(('p', 'b'), mockAST.lhs)
         self.assertEqual('<=', mockAST.operator)
-        self.assertEqual([([('a', 'a')], [('b', 'b')])], mockAST.rhs)
 
 
     def test_p_rule_never_occurs(self):
         data = '''RULE 
-            p:b /<= a _ b
+            p:b /<= a _
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual(('p', 'b'), mockAST.lhs)
         self.assertEqual('/<=', mockAST.operator)
-        self.assertEqual([([('a', 'a')], [('b', 'b')])], mockAST.rhs)
 
 
     def test_p_rule_only_and_always_occurs(self):
         data = '''RULE 
-            p:b <=> a:c _ b
+            p:b <=> a _ 
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual(('p', 'b'), mockAST.lhs)
         self.assertEqual('<=>', mockAST.operator)
-        self.assertEqual([([('a', 'c')], [('b', 'b')])], mockAST.rhs)
+
+
+    def test_p_pattern_element_segment_default(self):
+        data = '''RULE 
+            p:b <= a _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([('a', 'a')], mockAST.lc)
+
+
+    def test_p_pattern_element_segment_pair(self):
+        data = '''RULE 
+            p:b <= a:c _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([('a', 'c')], mockAST.lc)
+
+
+    def test_p_pattern_element_repeat(self):
+        data = '''RULE 
+            p:b <= a:c * _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([(('a', 'c'), '*')], mockAST.lc)
 
 
 if __name__ == "__main__":

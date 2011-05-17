@@ -17,6 +17,8 @@ class MockAST:
         self.lhs = None
         self.operator = ''
         self.rhs = None
+        self.lc = None
+        self.rc = None
     
     def r_error(self):
         self.error += 1
@@ -45,13 +47,4 @@ class MockAST:
     def r_pair(self, s1, s2):
         for i in range(len(s1)):
             self.pairs[(s1[i], s2[i])] = True
-    
-    def r_lhs(self, pair):
-        self.lhs = pair
-    
-    def r_operator(self, op):
-        self.operator = op
-    
-    def r_rhs(self, plist):
-        self.rhs = plist
     

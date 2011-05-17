@@ -121,9 +121,9 @@ class KgenParser:
 
     def p_rule(self, p):
         'rule : RULE opt_eol lhs_pair rule_operator rhs EOL kimmo_comments'
-        self.ast.r_lhs(p[3])
-        self.ast.r_operator(p[4])
-        self.ast.r_rhs(p[5])
+        self.ast.lhs = p[3]
+        self.ast.operator = p[4]
+        self.ast.rhs = p[5]
 
     def p_lhs_pair(self, p):
         'lhs_pair : segment COLON segment'
@@ -151,14 +151,18 @@ class KgenParser:
     def p_rhs_item_only_left_context(self, p):
         'rhs_item : pattern_list UNDER'
         p[0] = (p[1], None)
+        self.ast.lc = p[1]
 
     def p_rhs_item_only_right_context(self, p):
         'rhs_item : UNDER pattern_list'
         p[0] = (None, p[2])
+        self.ast.rc = p[2]
 
     def p_rhs_item_both_left_right_context(self, p):
         'rhs_item : pattern_list UNDER pattern_list'
         p[0] = (p[1], p[3])
+        self.ast.lc = p[1]
+        self.ast.rc = p[3]
 
     def p_pattern_list_single(self, p):
         'pattern_list : pattern_element'
@@ -168,9 +172,13 @@ class KgenParser:
         'pattern_list : pattern_list pattern_element'
         p[0] = p[1].append(p[2])
 
-    def p_pattern_element(self, p):
+    def p_pattern_element_segment_pair(self, p):
         'pattern_element : segment_pair'
         p[0] = p[1]
+
+    def p_pattern_element_repeat(self, p):
+        'pattern_element : segment_pair REG_REPEAT'
+        p[0] = (p[1], p[2])
 
     def p_segment_pair(self, p):
         'segment_pair : segment COLON segment'
