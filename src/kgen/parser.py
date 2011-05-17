@@ -216,6 +216,10 @@ class KgenParser:
             pass
         p[0] = [(p[1][x], p[3][x]) for x in range(len(p[1]))]
 
+    def p_segment_pair_alternate_any(self, p):
+        'segment_pair : alternate COLON'
+        p[0] = [(x, '@') for x in p[1]]
+
     def p_alternate(self, p):
         'alternate : LBRACE segment alternate_list RBRACE'
         p[0] = [p[2],] + p[3]
