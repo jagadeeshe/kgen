@@ -255,5 +255,15 @@ class parserTest(unittest.TestCase):
         self.assertEqual([('a', '@')], mockAST.lc)
 
 
+    def test_p_pattern_element_any_segment(self):
+        data = '''RULE 
+            p:b <= :a _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([('@', 'a')], mockAST.lc)
+
 if __name__ == "__main__":
     unittest.main()
