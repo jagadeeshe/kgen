@@ -201,6 +201,10 @@ class KgenParser:
         'segment_pair : alternate'
         p[0] = (p[1],)
 
+    def p_segment_pair_segment_alternate(self, p):
+        'segment_pair : segment COLON alternate'
+        p[0] = [(p[1], x) for x in p[3]]
+
     def p_alternate(self, p):
         'alternate : LBRACE segment alternate_list RBRACE'
         p[0] = [p[2],] + p[3]
