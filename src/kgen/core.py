@@ -29,8 +29,6 @@ tokens = (
         'RPAREN',
         'LBRACKET',
         'RBRACKET',
-        'LBRACE',
-        'RBRACE',
 
         'REG_OR',
         'REG_REPEAT',

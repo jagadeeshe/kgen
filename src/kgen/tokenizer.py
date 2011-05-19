@@ -22,8 +22,6 @@ class KgenLexer:
         ')' : 'RPAREN',
         '[' : 'LBRACKET',
         ']' : 'RBRACKET',
-        '{' : 'LBRACE',
-        '}' : 'RBRACE',
         '|' : 'REG_OR',
         '_' : 'UNDER', 
         '*' : 'REG_REPEAT',
@@ -66,7 +64,7 @@ class KgenLexer:
         return t
     
     def t_ID(self, t):
-        r'([A-Z][A-Za-z]*)|(:|;|,|\(|\)|\[|\]|\{|\}|\||_|\*)'
+        r'([A-Z][A-Za-z]*)|(:|;|,|\(|\)|\[|\]|\||_|\*)'
         t.type = KgenLexer.reserved.get(t.value, 'SUBSET_NAME')
         return t
     

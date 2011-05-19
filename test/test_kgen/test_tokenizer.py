@@ -28,8 +28,6 @@ class tokenizerTest(unittest.TestCase):
             (')',           [('RPAREN', ')')]),
             ('[',           [('LBRACKET', '[')]),
             (']',           [('RBRACKET', ']')]),
-            ('{',           [('LBRACE', '{')]),
-            ('}',           [('RBRACE', '}')]),
             ('|',           [('REG_OR', '|')]),
             ('*',           [('REG_REPEAT', '*')]),
             ('_',           [('UNDER', '_')]),
