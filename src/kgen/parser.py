@@ -49,7 +49,7 @@ class KgenParser:
         self.ast.r_kimmo_comment(p[2])
 
     def p_kimmo_comments_empty(self, p):
-        'kimmo_comments : empty opt_eol'
+        'kimmo_comments : opt_eol'
         pass
 
     def p_kimmo_comment(self, p):
