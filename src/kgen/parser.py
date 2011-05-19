@@ -171,7 +171,9 @@ class KgenParser:
 
     def p_pattern_list(self, p):
         'pattern_list : pattern_list pattern_element'
-        p[0] = p[1].append(p[2])
+        result = p[1]
+        result.append(p[2])
+        p[0] = result
 
     def p_pattern_element_segment_pair(self, p):
         'pattern_element : segment_pair'
@@ -197,6 +199,17 @@ class KgenParser:
         'segment_pair : COLON segment'
         p[0] = ('@', p[2])
 
+    def p_segment_pair_pattern_list(self, p):
+        'segment_pair : LBRACKET pattern_list alternative_list RBRACKET'
+        p[0] = p[2] + p[3]
+
+    def p_alternative_list_term(self, p):
+        'alternative_list : REG_OR pattern_list'
+        p[0] = p[2]
+
+    def p_alternative_list(self, p):
+        'aternative_list : alternative_list REG_OR pattern_list'
+        p[0] = p[1] + p[3]
 
 
     def parse(self, input, ast=None):
