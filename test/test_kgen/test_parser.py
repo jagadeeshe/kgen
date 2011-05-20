@@ -166,6 +166,19 @@ class parserTest(unittest.TestCase):
         self.assertEqual(None, mockAST.rc)
 
 
+    def test_p_rule_only_occurs_long_left_context(self):
+        data = '''RULE 
+            p:b => abc _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual('=>', mockAST.operator)
+        self.assertEqual([[PE('a'), PE('b'), PE('c')]], mockAST.lc)
+        self.assertEqual(None, mockAST.rc)
+
+
     def test_p_rule_only_occurs_right_context(self):
         data = '''RULE 
             p:b => _ a
@@ -234,6 +247,17 @@ class parserTest(unittest.TestCase):
         self.assertEqual([[PE('a','c')]], mockAST.lc)
 
 
+    def test_p_pattern_element_segment_pair_long(self):
+        data = '''RULE 
+            p:b <= a:c b:c _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([[PE('a','c'), PE('b','c')]], mockAST.lc)
+
+
     def test_p_pattern_element_repeat(self):
         data = '''RULE 
             p:b <= a:c * _
@@ -245,6 +269,19 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual([[ac]], mockAST.lc)
+
+
+    def test_p_pattern_element_repeat_long(self):
+        data = '''RULE 
+            p:b <= a:c * b _
+        '''
+        ac = PE('a','c')
+        ac.mark_REPEAT()
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([[ac, PE('b')]], mockAST.lc)
 
 
     def test_p_pattern_element_segment_any(self):
@@ -278,6 +315,17 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual([[PE('a'), PE('c')], [PE('b'), PE('c')]], mockAST.lc)
+
+
+    def test_p_pattern_element_segement_pair_list_long(self):
+        data = '''RULE 
+            p:b <= e [a | b] c _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([[PE('e'), PE('a'), PE('c')], [PE('e'), PE('b'), PE('c')]], mockAST.lc)
 
 
 if __name__ == "__main__":

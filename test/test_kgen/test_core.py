@@ -24,5 +24,10 @@ class Test(unittest.TestCase):
         target = [['a','d'], ['a','e'], ['b','d'], ['b','e'], ['c','d'], ['c','e']]
         self.assertEqual(target, cross_product(l1, l2))
 
+        l1 = [['a','b']]
+        l2 = [['d','e']]
+        target = [['a','b','d','e']]
+        self.assertEqual(target, cross_product(l1, l2))
+
 if __name__ == "__main__":
     unittest.main()
