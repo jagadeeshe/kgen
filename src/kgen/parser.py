@@ -203,12 +203,20 @@ class KgenParser:
         'segment_pair : LBRACKET pattern_list alternative_list RBRACKET'
         p[0] = p[2] + p[3]
 
+    def p_segment_pair_optional_list(self, p):
+        'segment_pair : LPAREN pattern_list RPAREN'
+        for item in p[2]:
+            if item[0] != PE(''):
+                p[2].append([PE('')])
+                break
+        p[0] = p[2]
+
     def p_alternative_list_term(self, p):
         'alternative_list : REG_OR pattern_list'
         p[0] = p[2]
 
     def p_alternative_list(self, p):
-        'aternative_list : alternative_list REG_OR pattern_list'
+        'alternative_list : alternative_list REG_OR pattern_list'
         p[0] = p[1] + p[3]
 
 
