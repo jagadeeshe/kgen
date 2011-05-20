@@ -7,6 +7,7 @@ import unittest
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
 from test_kgen.mock_ast import MockAST
+from kgen.core import PatternElement
 
 class parserTest(unittest.TestCase):
 
@@ -134,11 +135,12 @@ class parserTest(unittest.TestCase):
         data = '''RULE 
             p:b => a _
         '''
+        pat = PatternElement('p', 'b')
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual(('p', 'b'), mockAST.lhs)
+        self.assertEqual([pat], mockAST.lhs)
 
 
     def test_p_rule_only_occurs(self):

@@ -6,6 +6,7 @@ Created on May 5, 2011
 
 from ply import yacc
 import core
+from core import PatternElement
 
 """
 Example rules:  (blanks are ignored)
@@ -127,7 +128,7 @@ class KgenParser:
 
     def p_lhs_pair(self, p):
         'lhs_pair : segment COLON segment'
-        p[0] = (p[1], p[3])
+        p[0] = [PatternElement(p[1], p[3])]
 
     def p_rule_operator(self, p):
         '''rule_operator : ONLY_OCCURS
