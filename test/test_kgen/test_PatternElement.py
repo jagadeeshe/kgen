@@ -16,6 +16,12 @@ class PatternElementTest(unittest.TestCase):
         self.assertFalse(p.isREPEAT())
         self.assertFalse(p.isALTERNATIVE())
 
+    def test_default2(self):
+        p = PatternElement('a')
+        self.assertEqual('a', p[0])
+        self.assertEqual('a', p[1])
+
+
     def test_COMMIT(self):
         p = PatternElement('a', 'b')
         p.mark_COMMIT()

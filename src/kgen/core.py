@@ -41,7 +41,9 @@ class PatternElement(list):
     REPEAT = 2
     ALTERNATIVE = 4
 
-    def __init__(self, lex, sur, flag=0):
+    def __init__(self, lex, sur=None, flag=0):
+        if not sur:
+            sur = lex
         list.__init__(self, [lex, sur, flag])
 
     def mark_COMMIT(self):
