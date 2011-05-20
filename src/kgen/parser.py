@@ -6,7 +6,7 @@ Created on May 5, 2011
 
 from ply import yacc
 import core
-from core import PatternElement
+from core import PE, cross_product
 
 """
 Example rules:  (blanks are ignored)
@@ -128,7 +128,7 @@ class KgenParser:
 
     def p_lhs_pair(self, p):
         'lhs_pair : segment COLON segment'
-        p[0] = [PatternElement(p[1], p[3])]
+        p[0] = [[PE(p[1], p[3])]]
 
     def p_rule_operator(self, p):
         '''rule_operator : ONLY_OCCURS
@@ -168,13 +168,11 @@ class KgenParser:
 
     def p_pattern_list_single(self, p):
         'pattern_list : pattern_element'
-        p[0] = [p[1]]
+        p[0] = p[1]
 
     def p_pattern_list(self, p):
         'pattern_list : pattern_list pattern_element'
-        result = p[1]
-        result.append(p[2])
-        p[0] = result
+        p[0] = cross_product(p[1], p[2])
 
     def p_pattern_element_segment_pair(self, p):
         'pattern_element : segment_pair'
@@ -182,23 +180,24 @@ class KgenParser:
 
     def p_pattern_element_repeat(self, p):
         'pattern_element : segment_pair REG_REPEAT'
-        p[0] = (p[1], p[2])
+        p[1][0][0].mark_REPEAT()
+        p[0] = p[1]
 
     def p_segment_pair(self, p):
         'segment_pair : segment COLON segment'
-        p[0] = (p[1], p[3])
+        p[0] = [[PE(p[1], p[3])]]
 
     def p_segment_pair_segment_any(self, p):
         'segment_pair : segment COLON'
-        p[0] = (p[1], '@')
+        p[0] = [[PE(p[1], '@')]]
 
     def p_segment_pair_default(self, p):
         'segment_pair : segment'
-        p[0] = (p[1], p[1])
+        p[0] = [[PE(p[1])]]
 
     def p_segment_pair_any_segment(self, p):
         'segment_pair : COLON segment'
-        p[0] = ('@', p[2])
+        p[0] = [[PE('@', p[2])]]
 
     def p_segment_pair_pattern_list(self, p):
         'segment_pair : LBRACKET pattern_list alternative_list RBRACKET'

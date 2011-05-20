@@ -72,3 +72,13 @@ class PatternElement(list):
             return False
         else:
             return True
+
+PE = PatternElement
+
+
+def cross_product(list1, list2):
+    target = []
+    for s1 in list1:
+        for s2 in list2:
+            target.append(s1 + s2)
+    return target

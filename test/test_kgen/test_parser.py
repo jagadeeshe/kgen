@@ -7,7 +7,7 @@ import unittest
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
 from test_kgen.mock_ast import MockAST
-from kgen.core import PatternElement
+from kgen.core import PE
 
 class parserTest(unittest.TestCase):
 
@@ -135,12 +135,11 @@ class parserTest(unittest.TestCase):
         data = '''RULE 
             p:b => a _
         '''
-        pat = PatternElement('p', 'b')
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([pat], mockAST.lhs)
+        self.assertEqual([[PE('p', 'b')]], mockAST.lhs)
 
 
     def test_p_rule_only_occurs(self):
@@ -163,7 +162,7 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual('=>', mockAST.operator)
-        self.assertEqual([('a', 'a')], mockAST.lc)
+        self.assertEqual([[PE('a')]], mockAST.lc)
         self.assertEqual(None, mockAST.rc)
 
 
@@ -176,7 +175,7 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual('=>', mockAST.operator)
-        self.assertEqual([('a', 'a')], mockAST.rc)
+        self.assertEqual([[PE('a')]], mockAST.rc)
         self.assertEqual(None, mockAST.lc)
 
 
@@ -221,7 +220,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([('a', 'a')], mockAST.lc)
+        self.assertEqual([[PE('a')]], mockAST.lc)
 
 
     def test_p_pattern_element_segment_pair(self):
@@ -232,18 +231,20 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([('a', 'c')], mockAST.lc)
+        self.assertEqual([[PE('a','c')]], mockAST.lc)
 
 
     def test_p_pattern_element_repeat(self):
         data = '''RULE 
             p:b <= a:c * _
         '''
+        ac = PE('a','c')
+        ac.mark_REPEAT()
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([(('a', 'c'), '*')], mockAST.lc)
+        self.assertEqual([[ac]], mockAST.lc)
 
 
     def test_p_pattern_element_segment_any(self):
@@ -254,7 +255,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([('a', '@')], mockAST.lc)
+        self.assertEqual([[PE('a','@')]], mockAST.lc)
 
 
     def test_p_pattern_element_any_segment(self):
@@ -265,7 +266,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([('@', 'a')], mockAST.lc)
+        self.assertEqual([[PE('@','a')]], mockAST.lc)
 
 
     def test_p_pattern_element_segement_pair_list(self):
@@ -276,7 +277,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[('a', 'a'), ('b', 'b')], ('c', 'c')], mockAST.lc)
+        self.assertEqual([[PE('a'), PE('c')], [PE('b'), PE('c')]], mockAST.lc)
 
 
 if __name__ == "__main__":
