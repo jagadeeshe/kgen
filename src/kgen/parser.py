@@ -6,7 +6,7 @@ Created on May 5, 2011
 
 from ply import yacc
 import core
-from core import PE, cross_product
+from core import PE, cross_product, mark_alternate
 
 """
 Example rules:  (blanks are ignored)
@@ -219,6 +219,45 @@ class KgenParser:
         'alternative_list : alternative_list REG_OR pattern_list'
         p[0] = p[1] + p[3]
 
+    def p_segment_pair_alternate(self, p):
+        'segment_pair : alternate'
+        p[0] = [[PE(x) for x in p[1]]]
+        mark_alternate(p[0])
+
+    def p_segment_pair_segment_alternate(self, p):
+        'segment_pair : segment COLON alternate'
+        p[0] = [[PE(p[1], x) for x in p[3]]]
+        mark_alternate(p[0])
+
+    def p_segment_pair_alternate_segment(self, p):
+        'segment_pair : alternate COLON segment'
+        p[0] = [[PE(x, p[3]) for x in p[1]]]
+        mark_alternate(p[0])
+
+    def p_segment_pair_alternate_alternate(self, p):
+        'segment_pair : alternate COLON alternate'
+        if len(p[1]) != len(p[3]):
+            # TODO: raise error
+            pass
+        p[0] = [[PE(p[1][x], p[3][x]) for x in range(len(p[1]))]]
+        mark_alternate(p[0])
+
+    def p_segment_pair_alternate_any(self, p):
+        'segment_pair : alternate COLON'
+        p[0] = [[PE(x, '@') for x in p[1]]]
+        mark_alternate(p[0])
+
+    def p_alternate(self, p):
+        'alternate : LBRACE segment alternate_list RBRACE'
+        p[0] = [p[2]] + p[3]
+
+    def p_alternate_list_term(self, p):
+        'alternate_list : COMMA segment'
+        p[0] = [p[2]]
+
+    def p_alternate_list(self, p):
+        'alternate_list : alternate_list COMMA segment'
+        p[0] = p[1] + [p[3]]
 
     def parse(self, input, ast=None):
         if ast:

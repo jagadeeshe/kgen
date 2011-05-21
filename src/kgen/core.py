@@ -29,6 +29,8 @@ tokens = (
         'RPAREN',
         'LBRACKET',
         'RBRACKET',
+        'LBRACE',
+        'RBRACE',
 
         'REG_OR',
         'REG_REPEAT',
@@ -82,3 +84,9 @@ def cross_product(list1, list2):
         for s2 in list2:
             target.append(s1 + s2)
     return target
+
+
+def mark_alternate(alt_list):
+    itemlist = alt_list[0]
+    for i in range(len(itemlist)-1):
+        itemlist[i].mark_ALTERNATIVE()
