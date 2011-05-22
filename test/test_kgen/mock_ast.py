@@ -14,6 +14,7 @@ class MockAST:
         self.kimmo_comments = []
         self.subsets = {}
         self.pairs = {}
+        self.rules = []
         self.lhs = None
         self.operator = ''
         self.rhs = None
@@ -48,3 +49,5 @@ class MockAST:
         for i in range(len(s1)):
             self.pairs[(s1[i], s2[i])] = True
     
+    def r_rule(self):
+        self.rules.append((self.lhs, self.operator, self.rhs))

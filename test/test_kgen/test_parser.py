@@ -511,5 +511,17 @@ class parserTest(unittest.TestCase):
         self.assertEqual([[PE('V'), PE('p','b'), PE('+','0')]], mockAST.rhs)
 
 
+    def test_p_rule(self):
+        data = '''RULE
+            p:b => a _ c
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(1, len(mockAST.rules))
+        self.assertEqual(([[PE('p','b')]], '=>', [[PE('a'), PE('p','b'), PE('c')]]), mockAST.rules[0])
+
+
 if __name__ == "__main__":
     unittest.main()

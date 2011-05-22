@@ -124,6 +124,7 @@ class KgenParser:
         'rule : RULE opt_eol lhs_pair rule_operator rhs EOL kimmo_comments'
         self.ast.operator = p[4]
         self.ast.rhs = p[5]
+        self.ast.r_rule()
 
     def p_lhs_pair(self, p):
         'lhs_pair : segment COLON segment'
