@@ -142,6 +142,48 @@ class parserTest(unittest.TestCase):
         self.assertEqual([[PE('p', 'b')]], mockAST.lhs)
 
 
+    def test_p_lhs_pair_segment_alternate(self):
+        data = '''RULE 
+            p: {b, c} => a _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        t1 = [PE('p','b',PE.ALTERNATIVE), PE('p','c')]
+        t2 = [PE('a')] + t1
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([t1], mockAST.lhs)
+        self.assertEqual([t2], mockAST.rhs)
+
+
+    def test_p_lhs_pair_alternate_segment(self):
+        data = '''RULE 
+            {p, d}:b => a _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        t1 = [PE('p','b',PE.ALTERNATIVE), PE('d','b')]
+        t2 = [PE('a')] + t1
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([t1], mockAST.lhs)
+        self.assertEqual([t2], mockAST.rhs)
+
+
+    def test_p_lhs_pair_alternate_alternate(self):
+        data = '''RULE 
+            {p, d}:{b, c} => a _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        t1 = [PE('p','b',PE.ALTERNATIVE), PE('d','c')]
+        t2 = [PE('a')] + t1
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([t1], mockAST.lhs)
+        self.assertEqual([t2], mockAST.rhs)
+
+
     def test_p_rule_only_occurs(self):
         data = '''RULE 
             p:b => a _ b

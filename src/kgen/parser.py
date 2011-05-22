@@ -130,6 +130,27 @@ class KgenParser:
         p[0] = [[PE(p[1], p[3])]]
         self.ast.lhs = p[0]
 
+    def p_lhs_pair_segment_alternate(self, p):
+        'lhs_pair : segment COLON alternate'
+        p[0] = [[PE(p[1], x) for x in p[3]]]
+        mark_alternate(p[0])
+        self.ast.lhs = p[0]
+
+    def p_lhs_pair_alternate_segment(self, p):
+        'lhs_pair : alternate COLON segment'
+        p[0] = [[PE(x, p[3]) for x in p[1]]]
+        mark_alternate(p[0])
+        self.ast.lhs = p[0]
+
+    def p_lhs_pair_alternate_alternate(self, p):
+        'lhs_pair : alternate COLON alternate'
+        if len(p[1]) != len(p[3]):
+            # raise error
+            pass
+        p[0] = [[PE(p[1][x], p[3][x]) for x in range(len(p[1]))]]
+        mark_alternate(p[0])
+        self.ast.lhs = p[0]
+
     def p_rule_operator(self, p):
         '''rule_operator : ONLY_OCCURS
                          | ALWAYS_OCCURS
