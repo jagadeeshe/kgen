@@ -446,5 +446,15 @@ class parserTest(unittest.TestCase):
         self.assertEqual([[PE('a'), PE('p','b'), PE('b')]], mockAST.rhs)
 
 
+    def test_p_rhs_list(self):
+        data = '''RULE 
+            p:b <= a _ | _ b
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([[PE('a'), PE('p','b')], [PE('p','b'), PE('b')]], mockAST.rhs)
+
 if __name__ == "__main__":
     unittest.main()

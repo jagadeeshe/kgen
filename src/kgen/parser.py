@@ -148,7 +148,7 @@ class KgenParser:
 
     def p_rhs_list(self, p):
         'rhs : rhs REG_OR rhs_item'
-        p[0] = p[1].append(p[3])
+        p[0] = p[1] + p[3]
 
     def p_rhs_item_only_left_context(self, p):
         'rhs_item : pattern_list UNDER'
