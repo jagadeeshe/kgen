@@ -498,5 +498,18 @@ class parserTest(unittest.TestCase):
         self.assertEqual(0, mockAST.error)
         self.assertEqual([[PE('a'), PE('p','b')], [PE('p','b'), PE('b')]], mockAST.rhs)
 
+
+    def test_p_rule_with_subsetname(self):
+        data = '''SUBSET V a e i o u
+        RULE
+            p:b => V _ +:0
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([[PE('V'), PE('p','b'), PE('+','0')]], mockAST.rhs)
+
+
 if __name__ == "__main__":
     unittest.main()
