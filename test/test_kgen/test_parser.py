@@ -157,6 +157,22 @@ class parserTest(unittest.TestCase):
         self.assertEqual('bcdf', mockAST.subsets['C'])
 
 
+    def test_p_duplicate_subset_definition(self):
+        data = '''
+                SUBSET A     a
+                SUBSET A     e i o u
+                
+                SUBSET C    b c d f
+               '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual('Line 3: subset A is already defined in line 2.\n', self.output.getvalue())
+        self.assertEqual(1, len(mockAST.subsets))
+        self.assertEqual('bcdf', mockAST.subsets['C'])
+
+
     def test_p_subsets(self):
         data = '''
                 SUBSET V    a
