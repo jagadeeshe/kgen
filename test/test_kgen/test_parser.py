@@ -142,6 +142,21 @@ class parserTest(unittest.TestCase):
         self.assertEqual('bcdf', mockAST.subsets['C'])
 
 
+    def test_p_subset_no_segment_string(self):
+        data = '''
+                SUBSET A
+                
+                SUBSET C    b c d f
+               '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(1, mockAST.error)
+        self.assertEqual('Line 2: subset definition should be on the same line.\n', self.output.getvalue())
+        self.assertEqual(1, len(mockAST.subsets))
+        self.assertEqual('bcdf', mockAST.subsets['C'])
+
+
     def test_p_subsets(self):
         data = '''
                 SUBSET V    a
