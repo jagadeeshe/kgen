@@ -50,6 +50,20 @@ class parserTest(unittest.TestCase):
         self.assertEqual(2, mockAST.eol_term)
 
 
+    def test_p_kimmo_comments_spaced(self):
+        data = '''!;first comment
+                  
+                  !;second comment
+                  
+               '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([';first comment', ';second comment'], mockAST.kimmo_comments)
+        self.assertEqual(4, mockAST.eol_term)
+
+
     def test_p_eol_term(self):
         data = '''
                '''
