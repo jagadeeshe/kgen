@@ -8,6 +8,7 @@ from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
 from test_kgen.mock_ast import MockAST
 from kgen.core import PE
+from StringIO import StringIO
 
 class parserTest(unittest.TestCase):
 
@@ -15,7 +16,8 @@ class parserTest(unittest.TestCase):
         unittest.TestCase.__init__(self, methodName)
         klexer = KgenLexer()
         mockAST = MockAST()
-        self.kparser = KgenParser(klexer, mockAST)
+        self.output = StringIO()
+        self.kparser = KgenParser(klexer, self.output, mockAST)
 
 
     def test_p_kimmo_comments_empty(self):
@@ -113,6 +115,17 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual(0, len(mockAST.subsets))
+
+
+    def test_p_subset_unnamed(self):
+        data = '''
+                SUBSET     a
+               '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(1, mockAST.error)
+        self.assertEqual('Line 2: subset should have name. see the rule for naming a subset.\n', self.output.getvalue())
 
 
     def test_p_subsets(self):

@@ -29,8 +29,9 @@ class KgenParser:
 
     start = 'ruleset'
 
-    def __init__(self, klexer, ast, **kwargs):
+    def __init__(self, klexer, output, ast, **kwargs):
         self.klexer = klexer
+        self.output = output
         self.ast = ast
         self.parser = yacc.yacc(module=self, **kwargs)
 
@@ -284,7 +285,8 @@ class KgenParser:
     def parse(self, input, ast=None):
         if ast:
             self.ast = ast
-        
+        self.output.seek(0)
+        self.output.truncate()
         self.parser.parse(input=input, lexer=self.klexer.lexer)
         
 
