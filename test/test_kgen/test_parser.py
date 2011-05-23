@@ -128,6 +128,20 @@ class parserTest(unittest.TestCase):
         self.assertEqual('Line 2: subset should have name. see the rule for naming a subset.\n', self.output.getvalue())
 
 
+    def test_p_subset_unnamed_and_named(self):
+        data = '''
+                SUBSET     a
+                SUBSET C b c d f
+               '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(1, mockAST.error)
+        self.assertEqual('Line 2: subset should have name. see the rule for naming a subset.\n', self.output.getvalue())
+        self.assertEqual(1, len(mockAST.subsets))
+        self.assertEqual('bcdf', mockAST.subsets['C'])
+
+
     def test_p_subsets(self):
         data = '''
                 SUBSET V    a
