@@ -13,6 +13,7 @@ class MockAST:
         self.opt_eol_empty = 0
         self.kimmo_comments = []
         self.subsets = {}
+        self.subsets_line = {}
         self.pairs = {}
         self.rules = []
         self.lhs = None
@@ -42,8 +43,12 @@ class MockAST:
     def has_subset_name(self, name):
         return self.subsets.has_key(name)
     
-    def r_subset(self, subset):
+    def subset_lineno(self, name):
+        return self.subsets_line[name]
+    
+    def r_subset(self, subset, lineno):
         self.subsets[subset[0]] = subset[1]
+        self.subsets_line[subset[0]] = lineno
     
     def r_pair(self, s1, s2):
         for i in range(len(s1)):

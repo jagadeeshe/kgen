@@ -85,10 +85,10 @@ class KgenParser:
     def p_subset(self, p):
         'subset : SUBSET SUBSET_NAME segment_string EOL kimmo_comments'
         if self.ast.has_subset_name(p[2]):
-            # TODO: has semantic error: redeclared
-            pass
+            print >> self.output, "Line %d: subset %s is already defined in line %s." % (p.lineno(1), p[2], self.ast.subset_lineno(p[2]))
+            return
         p[0] = (p[2], p[3])
-        self.ast.r_subset(p[0])
+        self.ast.r_subset(p[0], p.lineno(1))
 
     def p_unnamed_subset_error(self, p):
         'subset : SUBSET error segment_string EOL kimmo_comments'

@@ -169,7 +169,8 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual('Line 3: subset A is already defined in line 2.\n', self.output.getvalue())
-        self.assertEqual(1, len(mockAST.subsets))
+        self.assertEqual(2, len(mockAST.subsets))
+        self.assertEqual('a', mockAST.subsets['A'])
         self.assertEqual('bcdf', mockAST.subsets['C'])
 
 
