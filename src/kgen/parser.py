@@ -76,7 +76,7 @@ class KgenParser:
 
     def p_subsets(self, p):
         'subsets : subsets subset'
-        self.ast.r_subset(p[2])
+        pass
 
     def p_subsets_empty(self, p):
         'subsets : empty'
@@ -88,6 +88,12 @@ class KgenParser:
             # TODO: has semantic error: redeclared
             pass
         p[0] = (p[2], p[3])
+        self.ast.r_subset(p[0])
+
+    def p_unnamed_subset_error(self, p):
+        'subset : SUBSET error segment_string EOL kimmo_comments'
+        print >> self.output, "Line %d: subset should have name. see the rule for naming a subset." % p.lineno(1)
+        self.parser.errok()
 
     def p_segment_string_oneseg(self, p):
         'segment_string : oneseg'
