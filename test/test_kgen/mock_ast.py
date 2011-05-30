@@ -56,4 +56,4 @@ class MockAST:
             self.pairs[(s1[i], s2[i])] = True
     
     def r_rule(self):
-        self.rules.append((self.lhs, self.operator, self.rhs))
+        self.rules.append((self.lhs, self.operator, self.rhs, self.columns))

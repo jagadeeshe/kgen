@@ -592,7 +592,7 @@ class parserTest(unittest.TestCase):
         self.assertEqual([[PE('V'), PE('p','b',PE.COMMIT), PE('+','0')]], mockAST.rhs)
 
 
-    def test_p_rule(self):
+    def test_p_rule_sample1(self):
         data = '''RULE
             p:b => a _ c
         '''
@@ -601,7 +601,43 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual(1, len(mockAST.rules))
-        self.assertEqual(([[PE('p','b',PE.COMMIT)]], '=>', [[PE('a'), PE('p','b',PE.COMMIT), PE('c')]]), mockAST.rules[0])
+        self.assertEqual(([[PE('p','b',PE.COMMIT)]], '=>', [[PE('a'), PE('p','b',PE.COMMIT), PE('c')]], [PE('p','b',PE.COMMIT)]), mockAST.rules[0])
+
+
+    def test_p_rule_sample2(self):
+        data = '''RULE
+            p:b <= a _ c
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(1, len(mockAST.rules))
+        self.assertEqual(([[PE('p','@')]], '<=', [[PE('a'), PE('p','@'), PE('c')]], [PE('p','b'),PE('p','@')]), mockAST.rules[0])
+
+
+    def test_p_rule_sample3(self):
+        data = '''RULE
+            p:b <=> a _ c
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(1, len(mockAST.rules))
+        self.assertEqual(([[PE('p','@')],[PE('p','b',PE.COMMIT)]], '<=>', [[PE('a'), PE('p','@'), PE('c')],[PE('a'), PE('p','b',PE.COMMIT), PE('c')]], [PE('p','b'),PE('p','@'),PE('p','b',PE.COMMIT)]), mockAST.rules[0])
+
+
+    def test_p_rule_sample4(self):
+        data = '''RULE
+            p:b /<= a _ c
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual(1, len(mockAST.rules))
+        self.assertEqual(([[PE('p','b')]], '/<=', [[PE('a'), PE('p','b'), PE('c')]], []), mockAST.rules[0])
 
 
 if __name__ == "__main__":
