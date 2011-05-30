@@ -38,7 +38,7 @@ class MockAST:
     def r_opt_eol_empty(self):
         self.opt_eol_empty += 1
     
-    def r_kimmo_comment(self, comment):
+    def add_kimmo_comment(self, comment):
         self.kimmo_comments.append(comment)
     
     def has_subset_name(self, name):
