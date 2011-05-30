@@ -496,7 +496,7 @@ class parserTest(unittest.TestCase):
         self.assertEqual([[PE('e'), PE('a'), PE('c')], [PE('e'), PE('b'), PE('c')]], mockAST.lc)
 
 
-    def te2st_p_segment_pair_optional_list(self):
+    def test_p_segment_pair_optional_list(self):
         data = '''RULE 
             p:b <= (a) _
         '''
