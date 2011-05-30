@@ -10,16 +10,16 @@ class PatternElementTest(unittest.TestCase):
 
     def test_default(self):
         p = PatternElement('a', 'b')
-        self.assertEqual('a', p[0])
-        self.assertEqual('b', p[1])
+        self.assertEqual('a', p.lex)
+        self.assertEqual('b', p.sur)
         self.assertFalse(p.isCOMMIT())
         self.assertFalse(p.isREPEAT())
         self.assertFalse(p.isALTERNATIVE())
 
     def test_default2(self):
         p = PatternElement('a')
-        self.assertEqual('a', p[0])
-        self.assertEqual('a', p[1])
+        self.assertEqual('a', p.lex)
+        self.assertEqual('a', p.sur)
 
 
     def test_COMMIT(self):

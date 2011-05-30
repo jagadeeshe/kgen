@@ -38,7 +38,7 @@ tokens = (
         'UNDER',
     )
 
-class PatternElement(list):
+class PatternElement(object):
     DEFAULT = 0
     COMMIT = 1
     REPEAT = 2
@@ -47,36 +47,74 @@ class PatternElement(list):
     def __init__(self, lex, sur=None, flag=0):
         if not sur:
             sur = lex
-        list.__init__(self, [lex, sur, flag])
+        self.lex = lex
+        self.sur = sur
+        self.flag = flag
 
     def mark_COMMIT(self):
-        self[2] |= PatternElement.COMMIT
+        self.flag |= PatternElement.COMMIT
 
     def mark_REPEAT(self):
-        self[2] |= PatternElement.REPEAT
+        self.flag |= PatternElement.REPEAT
 
     def mark_ALTERNATIVE(self):
-        self[2] |= PatternElement.ALTERNATIVE
+        self.flag |= PatternElement.ALTERNATIVE
 
     def isCOMMIT(self):
-        if (self[2] & PatternElement.COMMIT) == 0:
+        if (self.flag & PatternElement.COMMIT) == 0:
             return False
         else:
             return True
 
     def isREPEAT(self):
-        if (self[2] & PatternElement.REPEAT) == 0:
+        if (self.flag & PatternElement.REPEAT) == 0:
             return False
         else:
             return True
 
     def isALTERNATIVE(self):
-        if (self[2] & PatternElement.ALTERNATIVE) == 0:
+        if (self.flag & PatternElement.ALTERNATIVE) == 0:
             return False
         else:
             return True
 
+    def __eq__(self, other):
+        if other is None: return False
+        if type(other) is not PatternElement: return False
+        if self.lex == other.lex and self.sur == other.sur and self.flag == other.flag:
+            return True
+        else:
+            return False
+
+    def __repr__(self):
+        return "(%s,%s,%d)" % (self.lex, self.sur, self.flag)
+
+
 PE = PatternElement
+
+class PEmap(object):
+    def __init__(self):
+        self.column_to_index = {}
+        self.index_to_column = []
+    
+    def add(self, pe):
+        if not self.column_to_index.has_key(pe):
+            self.index_to_column.append(pe)
+            self.column_to_index[pe] = len(self.index_to_column) - 1
+        return self.column_to_index[pe]
+    
+    def indexof(self, pe):
+        return self.column_to_index[pe]
+    
+    def get(self, index):
+        return self.index_to_column[index]
+    
+    def __iter__(self):
+        for pe in self.index_to_column:
+            yield pe
+    
+    def __len__(self):
+        return len(self.index_to_column)
 
 
 def cross_product(list1, list2):
@@ -106,5 +144,5 @@ def add_obligatory_lhs(lhs, ast):
         pe1 = copy.deepcopy(pe)
         ast.columns.append(pe1)
         ''' add complement column '''
-        pe[1] = '@'
+        pe.sur = '@'
         ast.columns.append(pe)
