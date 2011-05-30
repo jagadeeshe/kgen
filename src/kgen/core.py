@@ -3,6 +3,7 @@ Created on May 5, 2011
 
 @author: jagadeesh
 '''
+import copy
 
 
 tokens = (
@@ -90,3 +91,17 @@ def mark_alternate(alt_list):
     itemlist = alt_list[0]
     for i in range(len(itemlist)-1):
         itemlist[i].mark_ALTERNATIVE()
+
+
+def add_optional_lhs(lhs, ast):
+    for pe in lhs:
+        pe.mark_COMMIT()
+        ast.columns.append(pe)
+
+
+def add_obligatory_lhs(lhs, ast):
+    for pe in lhs:
+        pe1 = copy.deepcopy(pe)
+        ast.columns.append(pe1)
+        pe[1] = '@' # complement
+        ast.columns.append(pe)

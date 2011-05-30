@@ -210,9 +210,11 @@ class parserTest(unittest.TestCase):
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
+        p1 = [PE('p', 'b', PE.COMMIT)]
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('p', 'b')]], mockAST.lhs)
+        self.assertEqual([p1], mockAST.lhs)
+        self.assertEqual(p1, mockAST.columns)
 
 
     def test_p_lhs_pair_segment_alternate(self):
@@ -221,12 +223,13 @@ class parserTest(unittest.TestCase):
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
-        t1 = [PE('p','b',PE.ALTERNATIVE), PE('p','c')]
+        t1 = [PE('p','b',PE.ALTERNATIVE|PE.COMMIT), PE('p','c',PE.COMMIT)]
         t2 = [PE('a')] + t1
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual([t1], mockAST.lhs)
         self.assertEqual([t2], mockAST.rhs)
+        self.assertEqual(t1, mockAST.columns)
 
 
     def test_p_lhs_pair_alternate_segment(self):
@@ -235,7 +238,7 @@ class parserTest(unittest.TestCase):
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
-        t1 = [PE('p','b',PE.ALTERNATIVE), PE('d','b')]
+        t1 = [PE('p','b',PE.ALTERNATIVE|PE.COMMIT), PE('d','b',PE.COMMIT)]
         t2 = [PE('a')] + t1
         
         self.assertEqual(0, mockAST.error)
@@ -249,7 +252,7 @@ class parserTest(unittest.TestCase):
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
-        t1 = [PE('p','b',PE.ALTERNATIVE), PE('d','c')]
+        t1 = [PE('p','b',PE.ALTERNATIVE|PE.COMMIT), PE('d','c',PE.COMMIT)]
         t2 = [PE('a')] + t1
         
         self.assertEqual(0, mockAST.error)
@@ -316,6 +319,8 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual('<=', mockAST.operator)
+        self.assertEqual([[PE('a'),PE('p','@')]], mockAST.rhs)
+        self.assertEqual([PE('p','b'),PE('p','@')], mockAST.columns)
 
 
     def test_p_rule_never_occurs(self):
@@ -327,6 +332,7 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual('/<=', mockAST.operator)
+        self.assertEqual(0, len(mockAST.columns))
 
 
     def test_p_rule_only_and_always_occurs(self):
@@ -338,6 +344,8 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual('<=>', mockAST.operator)
+        self.assertEqual([[PE('a'),PE('p','@')], [PE('a'),PE('p','b',PE.COMMIT)]], mockAST.rhs)
+        self.assertEqual([PE('p','b'),PE('p','@'),PE('p','b',PE.COMMIT)], mockAST.columns)
 
 
     def test_p_pattern_element_segment_default(self):
@@ -536,7 +544,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a'), PE('p','b')]], mockAST.rhs)
+        self.assertEqual([[PE('a'), PE('p','@')]], mockAST.rhs)
 
 
     def test_p_rhs_item_only_right_context(self):
@@ -547,7 +555,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('p','b'), PE('a')]], mockAST.rhs)
+        self.assertEqual([[PE('p','@'), PE('a')]], mockAST.rhs)
 
 
     def test_rhs_item_both_left_right_context(self):
@@ -558,7 +566,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a'), PE('p','b'), PE('b')]], mockAST.rhs)
+        self.assertEqual([[PE('a'), PE('p','@'), PE('b')]], mockAST.rhs)
 
 
     def test_p_rhs_list(self):
@@ -569,7 +577,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a'), PE('p','b')], [PE('p','b'), PE('b')]], mockAST.rhs)
+        self.assertEqual([[PE('a'), PE('p','@')], [PE('p','@'), PE('b')]], mockAST.rhs)
 
 
     def test_p_rule_with_subsetname(self):
@@ -581,7 +589,7 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('V'), PE('p','b'), PE('+','0')]], mockAST.rhs)
+        self.assertEqual([[PE('V'), PE('p','b',PE.COMMIT), PE('+','0')]], mockAST.rhs)
 
 
     def test_p_rule(self):
@@ -593,7 +601,7 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual(1, len(mockAST.rules))
-        self.assertEqual(([[PE('p','b')]], '=>', [[PE('a'), PE('p','b'), PE('c')]]), mockAST.rules[0])
+        self.assertEqual(([[PE('p','b',PE.COMMIT)]], '=>', [[PE('a'), PE('p','b',PE.COMMIT), PE('c')]]), mockAST.rules[0])
 
 
 if __name__ == "__main__":

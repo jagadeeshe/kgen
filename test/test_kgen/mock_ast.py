@@ -21,6 +21,7 @@ class MockAST:
         self.rhs = None
         self.lc = None
         self.rc = None
+        self.columns = []
     
     def r_error(self):
         self.error += 1

@@ -6,7 +6,8 @@ Created on May 5, 2011
 
 from ply import yacc
 import core
-from core import PE, cross_product, mark_alternate
+from core import PE, cross_product, mark_alternate, add_optional_lhs, add_obligatory_lhs
+import copy
 
 """
 Example rules:  (blanks are ignored)
@@ -133,27 +134,53 @@ class KgenParser:
         pass
 
     def p_rule(self, p):
-        'rule : RULE opt_eol lhs_pair rule_operator rhs EOL kimmo_comments'
-        self.ast.operator = p[4]
-        self.ast.rhs = p[5]
+        'rule : RULE opt_eol lhs rhs EOL kimmo_comments'
+        self.ast.rhs = p[4]
         self.ast.r_rule()
+
+    def p_lhs_only_occurs(self, p):
+        'lhs : lhs_pair ONLY_OCCURS'
+        add_optional_lhs(p[1][0], self.ast)
+        p[0] = p[1]
+        self.ast.operator = p[2]
+        self.ast.lhs = p[0]
+
+    def p_lhs_always_occurs(self, p):
+        'lhs : lhs_pair ALWAYS_OCCURS'
+        add_obligatory_lhs(p[1][0], self.ast)
+        p[0] = p[1]
+        self.ast.operator = p[2]
+        self.ast.lhs = p[0]
+
+    def p_lhs_always_and_only_occurs(self, p):
+        'lhs : lhs_pair ALWAYS_AND_ONLY_OCCURS'
+        l1 = copy.deepcopy(p[1][0])
+        p[1].append(l1)
+        add_obligatory_lhs(p[1][0], self.ast)
+        add_optional_lhs(p[1][1], self.ast)
+        p[0] = p[1]
+        self.ast.operator = p[2]
+        self.ast.lhs = p[0]
+
+    def p_lhs_never_occurs(self, p):
+        'lhs : lhs_pair NEVER_OCCURS'
+        p[0] = p[1]
+        self.ast.operator = p[2]
+        self.ast.lhs = p[0]
 
     def p_lhs_pair(self, p):
         'lhs_pair : segment COLON segment'
         p[0] = [[PE(p[1], p[3])]]
-        self.ast.lhs = p[0]
 
     def p_lhs_pair_segment_alternate(self, p):
         'lhs_pair : segment COLON alternate'
         p[0] = [[PE(p[1], x) for x in p[3]]]
         mark_alternate(p[0])
-        self.ast.lhs = p[0]
 
     def p_lhs_pair_alternate_segment(self, p):
         'lhs_pair : alternate COLON segment'
         p[0] = [[PE(x, p[3]) for x in p[1]]]
         mark_alternate(p[0])
-        self.ast.lhs = p[0]
 
     def p_lhs_pair_alternate_alternate(self, p):
         'lhs_pair : alternate COLON alternate'
@@ -163,13 +190,6 @@ class KgenParser:
         p[0] = [[PE(p[1][x], p[3][x]) for x in range(len(p[1]))]]
         mark_alternate(p[0])
         self.ast.lhs = p[0]
-
-    def p_rule_operator(self, p):
-        '''rule_operator : ONLY_OCCURS
-                         | ALWAYS_OCCURS
-                         | ALWAYS_AND_ONLY_OCCURS
-                         | NEVER_OCCURS'''
-        p[0] = p[1]
 
     def p_rhs(self, p):
         'rhs : rhs_item'
