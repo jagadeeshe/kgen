@@ -95,13 +95,16 @@ def mark_alternate(alt_list):
 
 def add_optional_lhs(lhs, ast):
     for pe in lhs:
+        ''' add commit column '''
         pe.mark_COMMIT()
         ast.columns.append(pe)
 
 
 def add_obligatory_lhs(lhs, ast):
     for pe in lhs:
+        ''' add normal column '''
         pe1 = copy.deepcopy(pe)
         ast.columns.append(pe1)
-        pe[1] = '@' # complement
+        ''' add complement column '''
+        pe[1] = '@'
         ast.columns.append(pe)
