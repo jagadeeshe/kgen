@@ -93,9 +93,10 @@ class PatternElement(object):
 PE = PatternElement
 
 class PEmap(object):
-    def __init__(self):
+    def __init__(self, padding=0):
         self.column_to_index = {}
         self.index_to_column = []
+        self.padding = padding
     
     def add(self, pe):
         if not self.column_to_index.has_key(pe):
@@ -115,7 +116,48 @@ class PEmap(object):
     
     def __len__(self):
         return len(self.index_to_column)
+    
+    def __str__(self):
+        output1 = ' ' * (self.padding + 2)
+        output2 = ' ' * (self.padding + 2)
+        output3 = ' ' * (self.padding + 2)
+        for pe in self.index_to_column:
+            output1 += ' %s' % pe.lex
+            output2 += ' %s' % pe.sur
+            output3 += '--'
+        return "%s\n%s\n%s-" % (output1, output2, output3)
 
+
+class KgenTable(object):
+    def __init__(self, column_size, padding=0):
+        self.commit_column = column_size
+        self.padding = padding
+        self.columns = [0 for _ in range(column_size+1)]
+        self.rows = []
+    
+    def add_transition(self, from_state, column_index, to_state, commit_flag=None):
+        while from_state >= len(self.rows):
+            self.rows.append(self.columns[:])
+        self.rows[from_state][column_index] = to_state
+        if commit_flag:
+            self.rows[from_state][self.commit_column] = commit_flag
+    
+    def __len__(self):
+        return len(self.rows)
+    
+    def __str__(self):
+        output = ''
+        for r in range(1, len(self.rows)):
+            output += ' ' * self.padding
+            output += '%d' % r
+            if self.rows[r][self.commit_column]:
+                output += '.'
+            else:
+                output += ':'
+            for c in range(len(self.columns)-1):
+                output += ' %d' % self.rows[r][c]
+            output += '\n'
+        return output
 
 def cross_product(list1, list2):
     target = []
