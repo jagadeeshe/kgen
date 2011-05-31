@@ -60,5 +60,7 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
     table = KgenTable(len(columns), padding)
     insert_rules(rule_list)
     
-    return "%s\n%s" %(columns, table)
+    output = "%s\n%s" %(columns, table)
+    print output
+    return output
 
