@@ -5,6 +5,7 @@ Created on May 5, 2011
 '''
 import copy
 
+FAIL = -1
 
 tokens = (
         'KIMMO_COMMENT',
@@ -110,6 +111,9 @@ class PEmap(object):
         if not self.column_to_index.has_key((pe.lex, pe.sur)):
             self.index_to_column.append(pe)
             self.column_to_index[(pe.lex, pe.sur)] = len(self.index_to_column) - 1
+        if pe.isCOMMIT():
+            idx = self.column_to_index[(pe.lex, pe.sur)]
+            self.index_to_column[idx].mark_COMMIT()
         return self.column_to_index[(pe.lex,pe.sur)]
     
     def indexof(self, pe):
@@ -160,6 +164,9 @@ class KgenTable(object):
         else:
             return 0
     
+    def is_row_commited(self, row_index):
+        return self.rows[row_index][self.commit_column]
+    
     def __len__(self):
         return len(self.rows)
     
@@ -173,7 +180,7 @@ class KgenTable(object):
             else:
                 output += ':'
             for c in range(len(self.columns)-1):
-                output += ' %d' % self.rows[r][c]
+                output += ' %d' % max(0, self.rows[r][c])
             if self.rows[r][self.commit_column]:
                 output += ' 0'
             else:

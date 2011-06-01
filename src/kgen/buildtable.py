@@ -3,7 +3,7 @@ Created on May 30, 2011
 
 @author: jagadeesh
 '''
-from core import PEmap, KgenTable
+from core import PEmap, KgenTable, FAIL
 import logging
 
 def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
@@ -60,13 +60,14 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
             if commit_flag:
                 next_state = 1
             else:
-                next_state = 0
+                next_state = FAIL
         else:
             next_state = calculate_next_state(current_state, pe)
         
-        column_index = get_column_index(pe)
-        
-        table.add_transition(current_state, column_index, next_state, old_commit_flag)
+        for col_idx, col in columns:
+            if not col.isPairwiseSame(pe): continue
+            if not col.isCOMMIT() or pe.isCOMMIT():
+                table.add_transition(current_state, col_idx, next_state, old_commit_flag)
         
         if len(pattern_string) > 1:
             insert_pattern_element(pattern_string[1:], next_state, commit_flag)
@@ -76,10 +77,32 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
         for rule in rules:
             insert_pattern_element(rule, 1, False)
     
+    
+    def add_default_transitions():
+        for row in range(1, len(table)):
+#            log.debug("row: %d", row)
+            for col_idx, col in columns:
+                transition = table.get_transition(row, col_idx)
+                if transition != 0: continue
+                #log.debug("row: %d col: %d trans: %d", row, col_idx, transition)
+                if table.is_row_commited(row):
+                    back = FAIL
+                else:
+                    back = 1
+                    if col.isCOMMIT():
+                        if not table.is_row_commited(back):
+                            back = FAIL
+                    else:
+                        if table.is_row_commited(back):
+                            back = 1
+                    
+                table.add_transition(row, col_idx, back)
+            
     create_lhs_columns(rule_columns)
     create_rule_columns(rule_list)
     table = KgenTable(len(columns), padding)
     insert_rules(rule_list)
+    add_default_transitions()
     
     output = "%s\n%s" %(columns, table)
     print output
