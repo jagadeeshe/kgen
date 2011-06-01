@@ -67,6 +67,9 @@ class PatternElement(object):
         else:
             return True
 
+    def defaultToFail(self):
+        return self.isCOMMIT()
+
     def isREPEAT(self):
         if (self.flag & PatternElement.REPEAT) == 0:
             return False
@@ -126,6 +129,11 @@ class PEmap(object):
         for i in range(len(self.index_to_column)):
             yield (i, self.index_to_column[i])
     
+    def match(self, pe):
+        for col_index, col in self:
+            if col.isPairwiseSame(pe) and (not col.defaultToFail() or pe.isCOMMIT()):
+                yield (col_index, col)
+        
     def __len__(self):
         return len(self.index_to_column)
     
@@ -164,8 +172,12 @@ class KgenTable(object):
         else:
             return 0
     
-    def is_row_commited(self, row_index):
+    def iscommitted(self, row_index):
         return self.rows[row_index][self.commit_column]
+    
+    def states(self):
+        for state in range(1, len(self)):
+            yield state
     
     def __len__(self):
         return len(self.rows)
