@@ -78,6 +78,14 @@ class PatternElement(object):
         else:
             return True
 
+    def isPairwiseSame(self, other):
+        if other is None: return False
+        if type(other) is not PatternElement: return False
+        if self.lex == other.lex and self.sur == other.sur:
+            return True
+        else:
+            return False
+        
     def __eq__(self, other):
         if other is None: return False
         if type(other) is not PatternElement: return False
@@ -99,20 +107,20 @@ class PEmap(object):
         self.padding = padding
     
     def add(self, pe):
-        if not self.column_to_index.has_key(pe):
+        if not self.column_to_index.has_key((pe.lex, pe.sur)):
             self.index_to_column.append(pe)
-            self.column_to_index[pe] = len(self.index_to_column) - 1
-        return self.column_to_index[pe]
+            self.column_to_index[(pe.lex, pe.sur)] = len(self.index_to_column) - 1
+        return self.column_to_index[(pe.lex,pe.sur)]
     
     def indexof(self, pe):
-        return self.column_to_index[pe]
+        return self.column_to_index[(pe.lex, pe.sur)]
     
     def get(self, index):
         return self.index_to_column[index]
     
     def __iter__(self):
-        for pe in self.index_to_column:
-            yield pe
+        for i in range(len(self.index_to_column)):
+            yield (i, self.index_to_column[i])
     
     def __len__(self):
         return len(self.index_to_column)
@@ -125,6 +133,9 @@ class PEmap(object):
             output1 += ' %s' % pe.lex
             output2 += ' %s' % pe.sur
             output3 += '--'
+        output1 += ' @'
+        output2 += ' @'
+        output3 += '--'
         return "%s\n%s\n%s-" % (output1, output2, output3)
 
 
@@ -134,6 +145,7 @@ class KgenTable(object):
         self.padding = padding
         self.columns = [0 for _ in range(column_size+1)]
         self.rows = []
+        self.rows.append(self.columns[:])
     
     def add_transition(self, from_state, column_index, to_state, commit_flag=None):
         while from_state >= len(self.rows):
@@ -141,6 +153,12 @@ class KgenTable(object):
         self.rows[from_state][column_index] = to_state
         if commit_flag:
             self.rows[from_state][self.commit_column] = commit_flag
+    
+    def get_transition(self, from_state, column_index):
+        if from_state < len(self.rows):
+            return self.rows[from_state][column_index]
+        else:
+            return 0
     
     def __len__(self):
         return len(self.rows)
@@ -156,6 +174,10 @@ class KgenTable(object):
                 output += ':'
             for c in range(len(self.columns)-1):
                 output += ' %d' % self.rows[r][c]
+            if self.rows[r][self.commit_column]:
+                output += ' 0'
+            else:
+                output += ' 1'
             output += '\n'
         return output
 

@@ -9,10 +9,12 @@ from kgen.parser import KgenParser
 from test_kgen.mock_ast import MockAST
 from StringIO import StringIO
 from kgen.buildtable import build_kgen_table
+import logging
 
 class buildtableTest(unittest.TestCase):
     def __init__(self, methodName='run'):
         unittest.TestCase.__init__(self, methodName)
+        logging.basicConfig(level=logging.DEBUG)
         klexer = KgenLexer()
         mockAST = MockAST()
         self.output = StringIO()
@@ -28,63 +30,163 @@ class buildtableTest(unittest.TestCase):
 
 
     def test_only_rule_case1(self):
-        input = " RULE    p:b => a c _ d e"
+        input = " RULE    p:b => _ +:0 m"
         output = '''
-           p a c d e
-           b a c d e
-          -----------
-        1: 0 2 0 0 0
-        2: 0 0 3 0 0
-        3: 4 0 0 0 0
-        4. 0 0 0 5 0
-        5. 0 0 0 0 1
+           p + m @
+           b 0 m @
+          ---------
+        1: 2 0 0 1
+        2. 0 3 0 0
+        3. 0 0 1 0
         '''
         self.do_test(input, output)
 
 
     def test_only_rule_case2(self):
-        input = " RULE    p:b <= a c _ d e"
+        input = " RULE    p:b <= _ +:0 m"
         output = '''
-           p p a c d e
-           b @ a c d e
-          -------------
-        1: 0 0 2 0 0 0
-        2: 0 0 0 3 0 0
-        3: 0 4 0 0 0 0
-        4: 0 0 0 0 5 0
-        5: 0 0 0 0 0 0
+           p p + m @
+           b @ 0 m @
+          -----------
+        1: 0 2 0 0 1
+        2: 0 0 3 0 1
+        3: 0 0 0 0 1
         '''
         self.do_test(input, output)
 
 
     def test_only_rule_case3(self):
-        input = " RULE    p:b <=> a c _ d e"
+        input = " RULE    p:b <=> _ +:0 m"
         output = '''
-           p p p a c d e
-           b @ b a c d e
-          ---------------
-        1: 0 0 0 2 0 0 0
-        2: 0 0 0 0 3 0 0
-        3: 0 4 4 0 0 0 0
-        4. 0 0 0 0 0 5 0
-        5. 0 0 0 0 0 0 1
+           p p + m @
+           b @ 0 m @
+          -----------
+        1: 4 2 0 0 1
+        2: 0 0 3 0 1
+        3: 0 0 0 0 1
+        4. 0 0 5 0 0
+        5. 0 0 0 1 0
         '''
         self.do_test(input, output)
 
 
     def test_only_rule_case4(self):
-        input = " RULE    p:b /<= a c _ d e"
+        input = " RULE    p:b /<= _ +:0 m"
         output = '''
-           a c p d e
-           a c b d e
-          -----------
-        1: 2 0 0 0 0
-        2: 0 3 0 0 0
-        3: 0 0 4 0 0
-        4: 0 0 0 5 0
-        5: 0 0 0 0 0
+           p + m @
+           b 0 m @
+          ---------
+        1: 2 0 0 1
+        2: 0 3 0 1
+        3: 0 0 0 1
         '''
         self.do_test(input, output)
+
+
+    def test_only_rule_case5(self):
+        input = " RULE    p:b => m +:0 _ "
+        output = '''
+           p m + @
+           b m 0 @
+          ---------
+        1: 0 2 0 1
+        2: 0 0 3 1
+        3: 1 0 0 1
+        '''
+        self.do_test(input, output)
+
+
+    def test_only_rule_case6(self):
+        input = " RULE    p:b <= m +:0 _ "
+        output = '''
+           p p m + @
+           b @ m 0 @
+          -----------
+        1: 0 0 2 0 1
+        2: 0 0 0 3 1
+        3: 0 0 0 0 1
+        '''
+        self.do_test(input, output)
+
+
+    def test_only_rule_case7(self):
+        input = " RULE    p:b <=> m +:0 _ "
+        output = '''
+           p p m + @
+           b @ m 0 @
+          -----------
+        1: 0 0 2 0 1
+        2: 0 0 0 3 1
+        3: 1 0 0 0 1
+        '''
+        self.do_test(input, output)
+
+
+    def test_only_rule_case8(self):
+        input = " RULE    p:b /<= m +:0 _ "
+        output = '''
+           m + p @
+           m 0 b @
+          ---------
+        1: 2 0 0 1
+        2: 0 3 0 1
+        3: 0 0 0 1
+        '''
+        self.do_test(input, output)
+
+
+    def test_only_rule_case9(self):
+        input = " RULE    s:z => v _ v"
+        output = '''
+           s v @
+           z v @
+          -------
+        1: 0 2 1
+        2: 3 0 1
+        3. 0 1 0
+        '''
+        self.do_test(input, output)
+
+
+    def test_only_rule_case10(self):
+        input = " RULE    s:z <= v _ v"
+        output = '''
+           s s v @
+           z @ v @
+          ---------
+        1: 0 0 2 1
+        2: 0 3 0 1
+        3: 0 0 0 1
+        '''
+        self.do_test(input, output)
+
+
+    def test_only_rule_case11(self):
+        input = " RULE    s:z <=> v _ v"
+        output = '''
+           s s v @
+           z @ v @
+          ---------
+        1: 0 0 2 1
+        2: 4 3 0 1
+        3: 0 0 0 1
+        4. 0 0 1 0
+        '''
+        self.do_test(input, output)
+
+
+    def test_only_rule_case12(self):
+        input = " RULE    s:z /<= v _ v"
+        output = '''
+           v s @
+           v z @
+          -------
+        1: 2 0 1
+        2: 0 3 1
+        3: 0 0 1
+        '''
+        self.do_test(input, output)
+
 
 
 if __name__ == "__main__":

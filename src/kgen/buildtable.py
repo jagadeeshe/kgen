@@ -25,7 +25,28 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
         return columns.indexof(pe)
     
     def calculate_next_state(current_state, pe):
-        return current_state + 1
+        transition = 0
+        for col_index, col in columns:
+            cond = col.isPairwiseSame(pe) and (not col.isCOMMIT() or pe.isCOMMIT())
+            if not cond: continue
+            
+            if transition == 0:
+                # this is the first potential transition
+                transition = table.get_transition(current_state, col_index)
+            else:
+                # we already have a potential next state transition.
+                new_trans = table.get_transition(current_state, col_index)
+                if new_trans != transition and new_trans != current_state:
+                    transition = 0
+                    break
+        
+        if transition == 0:
+            new_state = len(table)
+            if new_state == current_state:
+                new_state += 1
+            return new_state
+        else:
+            return transition
     
     def insert_pattern_element(pattern_string, current_state, commit_flag):
         pe = pattern_string[0]
