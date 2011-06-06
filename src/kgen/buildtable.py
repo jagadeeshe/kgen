@@ -40,33 +40,30 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
         for col_index, _ in columns.match(pe):
             if transition == 0:
                 # this is the first potential transition
-                new_trans = table.get_transition(current_state, col_index)
+                new_trans = table[current_state, col_index]
                 if new_trans != 0 and new_trans != current_state:
                     transition = new_trans
             else:
                 # we already have a potential next state transition.
-                new_trans = table.get_transition(current_state, col_index)
+                new_trans = table[current_state, col_index]
                 if new_trans != transition and new_trans != current_state:
                     transition = 0
                     break
         
         if transition == 0:
-            new_state = len(table)
-            if new_state == current_state:
-                new_state += 1
-            return new_state
+            return table.create_state(current_state, pe)
         else:
             return transition
     
     def insert_pattern_element(pattern_string, current_state, commit_flag):
         pe = pattern_string[0]
-        old_commit_flag = commit_flag
+        table[current_state].committed = commit_flag
         commit_flag |= pe.isCOMMIT()
         
         next_state = calculate_next_state(pattern_string, current_state, commit_flag)
         
         for col_idx, _ in columns.match(pe):
-            table.add_transition(current_state, col_idx, next_state, old_commit_flag)
+            table.add_transition(current_state, col_idx, next_state)
         
         if len(pattern_string) > 1:
             # if there are more pattern elements insert it recursively
@@ -78,21 +75,22 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
             insert_pattern_element(rule, 1, False)
     
     
+    def compute_back_loop(row, col_idx, col):
+        return 1
+    
     def add_default_transitions():
-        for row in table.states():
+        for row in table:
             for col_idx, col in columns:
-                transition = table.get_transition(row, col_idx)
+                transition = table[row, col_idx]
                 if transition != 0: continue
-                if table.iscommitted(row):
+                if table[row].committed:
+                    back = FAIL
+                elif col.defaultToFail():
                     back = FAIL
                 else:
-                    back = 1
-                    if col.defaultToFail():
-                        if not table.iscommitted(back):
-                            back = FAIL
-                    else:
-                        if table.iscommitted(back):
-                            back = 1
+                    back = compute_back_loop(row, col_idx, col)
+                    if table[back].committed:
+                        back = 1
                 
                 table.add_transition(row, col_idx, back)
             
