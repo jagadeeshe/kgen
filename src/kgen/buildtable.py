@@ -79,23 +79,23 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
         return 1
     
     def add_default_transitions():
-        for row in table:
+        for state in table:
             for col_idx, col in columns:
-                if table[row, col_idx] != 0:
+                if table[state, col_idx] != 0:
                     ''' if the state is not 0 means the [state, col_idx] position has a transition to some state or FAIL entry '''
                     continue
-                if table[row].committed:
+                if table[state].committed:
                     ''' only rule - states traversed after the special correspondence is recognized '''
                     back = FAIL
                 elif col.defaultToFail():
                     ''' only rule - special correspondence column transition to FAIL state '''
                     back = FAIL
                 else:
-                    back = compute_back_loop(row, col_idx, col)
+                    back = compute_back_loop(state, col_idx, col)
                     if table[back].committed:
                         back = 1
                 
-                table.add_transition(row, col_idx, back)
+                table.add_transition(state, col_idx, back)
             
     create_lhs_columns(rule_columns)
     create_rule_columns(rule_list)
