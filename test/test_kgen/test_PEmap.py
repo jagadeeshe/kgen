@@ -15,8 +15,8 @@ class PEmapTest(unittest.TestCase):
         self.assertEqual(0, pemap.add(a))
         self.assertEqual(1, pemap.add(b))
         self.assertEqual(2, len(pemap))
-        self.assertEqual(a, pemap.get(0))
-        self.assertEqual(b, pemap.get(1))
+        self.assertEqual(a, pemap[0])
+        self.assertEqual(b, pemap[1])
         self.assertEqual(0, pemap.indexof(a))
         self.assertEqual(1, pemap.indexof(b))
         for x, _ in pemap: pass
@@ -30,7 +30,7 @@ class PEmapTest(unittest.TestCase):
         pemap.add(a)
         pemap.add(a2)
         self.assertEqual(1, len(pemap))
-        self.assertTrue(pemap.get(0).defaultToFail())
+        self.assertTrue(pemap[0].defaultToFail())
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,6 +4,7 @@ Created on May 5, 2011
 @author: jagadeesh
 '''
 import copy
+from UserList import UserList
 
 FAIL = -1
 
@@ -122,7 +123,7 @@ class PEmap(object):
     def indexof(self, pe):
         return self.column_to_index[(pe.lex, pe.sur)]
     
-    def get(self, index):
+    def __getitem__(self, index):
         return self.index_to_column[index]
     
     def __iter__(self):
@@ -153,47 +154,67 @@ class PEmap(object):
 
 class KgenTable(object):
     def __init__(self, column_size, padding=0):
-        self.commit_column = column_size
+        self.column_size = column_size
         self.padding = padding
-        self.columns = [0 for _ in range(column_size+1)]
         self.rows = []
-        self.rows.append(self.columns[:])
+        self._add_default_row()
+        self._add_default_row()
     
-    def add_transition(self, from_state, column_index, to_state, commit_flag=None):
-        while from_state >= len(self.rows):
-            self.rows.append(self.columns[:])
+    def _add_default_row(self):
+        cols = [0] * self.column_size
+        row = UserList(cols)
+        row.context = []
+        row.committed = False
+        self.rows.append(row)
+        return row
+    
+    def add_transition(self, from_state, column_index, to_state):
         self.rows[from_state][column_index] = to_state
-        if commit_flag:
-            self.rows[from_state][self.commit_column] = commit_flag
     
-    def get_transition(self, from_state, column_index):
-        if from_state < len(self.rows):
-            return self.rows[from_state][column_index]
+    def create_state(self, old_state, pe):
+        new_state = len(self) + 1
+        self._add_default_row()
+        self.rows[new_state].context = self.rows[old_state].context[:]
+        self.rows[new_state].context.append(pe)
+        return new_state
+    
+    def __getitem__(self, index):
+        state = 0
+        col_idx = None
+        if type(index) == int and index != 0:
+            state = index
+        elif type(index) == tuple and len(index) == 2:
+            state = index[0]
+            col_idx = index[1]
         else:
-            return 0
+            raise IndexError("list index out of range")
+        if col_idx != None:
+            if state <= len(self):
+                return self.rows[state][col_idx]
+            else:
+                return 0
+        else:
+            return self.rows[state]
     
-    def iscommitted(self, row_index):
-        return self.rows[row_index][self.commit_column]
-    
-    def states(self):
-        for state in range(1, len(self)):
+    def __iter__(self):
+        for state in range(1, len(self)+1):
             yield state
     
     def __len__(self):
-        return len(self.rows)
+        return len(self.rows) - 1
     
     def __str__(self):
         output = ''
-        for r in range(1, len(self.rows)):
+        for r in self:
             output += ' ' * self.padding
             output += '%d' % r
-            if self.rows[r][self.commit_column]:
+            if self[r].committed:
                 output += '.'
             else:
                 output += ':'
-            for c in range(len(self.columns)-1):
-                output += ' %d' % max(0, self.rows[r][c])
-            if self.rows[r][self.commit_column]:
+            for c in range(self.column_size):
+                output += ' %d' % max(0, self[r,c])
+            if self[r].committed:
                 output += ' 0'
             else:
                 output += ' 1'
