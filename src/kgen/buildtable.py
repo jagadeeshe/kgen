@@ -76,7 +76,12 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
     
     
     def compute_back_loop(row, col_idx, col):
-        return 1
+        longrow = 1
+        tmp = [col]
+        for row2 in range(2, len(table)+1):
+            if tmp == table[row2].context:
+                longrow = row2
+        return longrow
     
     def add_default_transitions():
         for state in table:
@@ -96,12 +101,21 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
                         back = 1
                 
                 table.add_transition(state, col_idx, back)
-            
+    
+    def add_back_loops():
+        for state in table:
+            for col_idx, col in columns:
+                if table[state, col_idx] == 1:
+                    back = compute_back_loop(state, col_idx, col)
+                    if not table[back].committed:
+                        table.add_transition(state, col_idx, back)
+    
     create_lhs_columns(rule_columns)
     create_rule_columns(rule_list)
     table = KgenTable(len(columns), padding)
     insert_rules(rule_list)
     add_default_transitions()
+    add_back_loops()
     
     output = "%s\n%s" %(columns, table)
     print output
