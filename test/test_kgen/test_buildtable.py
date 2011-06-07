@@ -49,8 +49,8 @@ class buildtableTest(unittest.TestCase):
            b @ 0 m @
           -----------
         1: 1 2 1 1 1
-        2: 1 1 3 1 1
-        3: 1 1 1 0 1
+        2: 1 2 3 1 1
+        3: 1 2 1 0 1
         '''
         self.do_test(input, output)
 
@@ -62,8 +62,8 @@ class buildtableTest(unittest.TestCase):
            b @ 0 m @
           -----------
         1: 4 2 1 1 1
-        2: 1 1 3 1 1
-        3: 1 1 1 0 1
+        2: 4 2 3 1 1
+        3: 4 2 1 0 1
         4. 0 0 5 0 0
         5. 0 0 0 1 0
         '''
@@ -77,8 +77,8 @@ class buildtableTest(unittest.TestCase):
            b 0 m @
           ---------
         1: 2 1 1 1
-        2: 1 3 1 1
-        3: 1 1 0 1
+        2: 2 3 1 1
+        3: 2 1 0 1
         '''
         self.do_test(input, output)
 
@@ -90,8 +90,8 @@ class buildtableTest(unittest.TestCase):
            b m 0 @
           ---------
         1: 0 2 1 1
-        2: 0 1 3 1
-        3: 1 1 1 1
+        2: 0 2 3 1
+        3: 1 2 1 1
         '''
         self.do_test(input, output)
 
@@ -103,8 +103,8 @@ class buildtableTest(unittest.TestCase):
            b @ m 0 @
           -----------
         1: 1 1 2 1 1
-        2: 1 1 1 3 1
-        3: 1 0 1 1 1
+        2: 1 1 2 3 1
+        3: 1 0 2 1 1
         '''
         self.do_test(input, output)
 
@@ -116,8 +116,8 @@ class buildtableTest(unittest.TestCase):
            b @ m 0 @
           -----------
         1: 0 1 2 1 1
-        2: 0 1 1 3 1
-        3: 1 0 1 1 1
+        2: 0 1 2 3 1
+        3: 1 0 2 1 1
         '''
         self.do_test(input, output)
 
@@ -129,8 +129,8 @@ class buildtableTest(unittest.TestCase):
            m 0 b @
           ---------
         1: 2 1 1 1
-        2: 1 3 1 1
-        3: 1 1 0 1
+        2: 2 3 1 1
+        3: 2 1 0 1
         '''
         self.do_test(input, output)
 
@@ -142,8 +142,8 @@ class buildtableTest(unittest.TestCase):
            z v @
           -------
         1: 0 2 1
-        2: 3 1 1
-        3. 0 1 0
+        2: 3 2 1
+        3. 0 2 0
         '''
         self.do_test(input, output)
 
@@ -155,7 +155,7 @@ class buildtableTest(unittest.TestCase):
            z @ v @
           ---------
         1: 1 1 2 1
-        2: 1 3 1 1
+        2: 1 3 2 1
         3: 1 1 0 1
         '''
         self.do_test(input, output)
@@ -168,9 +168,9 @@ class buildtableTest(unittest.TestCase):
            z @ v @
           ---------
         1: 0 1 2 1
-        2: 4 3 1 1
+        2: 4 3 2 1
         3: 0 1 0 1
-        4. 0 0 1 0
+        4. 0 0 2 0
         '''
         self.do_test(input, output)
 
@@ -182,7 +182,7 @@ class buildtableTest(unittest.TestCase):
            v z @
           -------
         1: 2 1 1
-        2: 1 3 1
+        2: 2 3 1
         3: 0 1 1
         '''
         self.do_test(input, output)
