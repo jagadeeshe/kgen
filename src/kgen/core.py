@@ -3,7 +3,13 @@ Created on May 5, 2011
 
 @author: jagadeesh
 '''
+__version__ = "1.0"
+
+import sys
 import copy
+from optparse import OptionParser
+from UserDict import UserDict
+
 
 FAIL = -1
 
@@ -69,3 +75,28 @@ def add_obligatory_lhs(lhs, ast):
         ''' add complement column '''
         pe.sur = '@'
         ast.columns.append(pe)
+
+
+config = UserDict()
+config.verbose = False
+config.input = ''
+config.output = ''
+
+def init_args(args, values):
+    usage = "usage: %prog [options] INPUT-FILE OUTPUT-FILE"
+    description = '''This program is used to compile pc-kimmo two level rules into state tables.
+INPUT-FILE - text file containing two-level rule description.
+OUTPUT-FILE - pc-kimmo rule file.
+'''
+    version = "kgen %s"%__version__
+    
+    parser = OptionParser(usage=usage, description=description, version=version)
+    parser.add_option("-v", "--verbose", action="store_true", default=False, dest="verbose", help="generate debug information")
+    
+    (_, args) = parser.parse_args(args=args, values=values)
+    
+    if len(args) != 2:
+        parser.print_help()
+        sys.exit(1)
+    values.input = args[0]
+    values.output = args[1]
