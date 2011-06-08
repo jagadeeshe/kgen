@@ -46,7 +46,7 @@ class KgenParser:
 
     def p_ruleset(self, p):
         'ruleset : kimmo_comments subsets pairs rules'
-        self.ast.r_ruleset()
+        self.ast.add_ruleset()
 
     def p_kimmo_comments_list(self, p):
         'kimmo_comments : kimmo_comments kimmo_comment'
@@ -90,7 +90,7 @@ class KgenParser:
             print >> self.output, "Line %d: subset %s is already defined in line %s." % (p.lineno(1), p[2], self.ast.subset_lineno(p[2]))
             return
         p[0] = (p[2], p[3])
-        self.ast.r_subset(p[0], p.lineno(1))
+        self.ast.add_subset(p[0], p.lineno(1))
 
     def p_unnamed_subset_error(self, p):
         'subset : SUBSET error segment_string EOL kimmo_comments'
@@ -124,7 +124,7 @@ class KgenParser:
 
     def p_pairlist(self, p):
         'pairlist : PAIRS opt_eol segment_string EOL segment_string EOL'
-        self.ast.r_pair(p[3], p[5])
+        self.ast.add_pair(p[3], p[5])
 
     def p_rules_term(self, p):
         'rules : empty'
@@ -137,7 +137,7 @@ class KgenParser:
     def p_rule(self, p):
         'rule : RULE opt_eol lhs rhs EOL kimmo_comments'
         self.ast.rhs = p[4]
-        self.ast.r_rule()
+        self.ast.add_rule(p.lineno(3))
 
     def p_lhs_only_occurs(self, p):
         'lhs : lhs_pair ONLY_OCCURS'

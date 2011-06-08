@@ -25,7 +25,7 @@ class MockAST:
     def r_error(self):
         self.error += 1
     
-    def r_ruleset(self):
+    def add_ruleset(self):
         self.ruleset += 1
     
     def r_eol_term(self):
@@ -49,12 +49,12 @@ class MockAST:
     def subset_lineno(self, name):
         return self.subsets[name][0]
     
-    def r_subset(self, subset, lineno):
+    def add_subset(self, subset, lineno):
         self.subsets[subset[0]] = (lineno, subset[1])
     
-    def r_pair(self, s1, s2):
+    def add_pair(self, s1, s2):
         for i in range(len(s1)):
             self.pairs[(s1[i], s2[i])] = True
     
-    def r_rule(self):
+    def add_rule(self, lineno):
         self.rules.append((self.lhs, self.operator, self.rhs, self.columns))
