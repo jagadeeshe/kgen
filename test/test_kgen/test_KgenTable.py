@@ -4,7 +4,7 @@ Created on Jun 6, 2011
 @author: jagadeeshe
 '''
 import unittest
-from kgen.core import PE, PEmap, KgenTable
+from kgen.datastructure import PE, KgenTable
 
 
 class KgenTableTest(unittest.TestCase):

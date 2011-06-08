@@ -4,7 +4,7 @@ Created on Jun 1, 2011
 @author: jagadeeshe
 '''
 import unittest
-from kgen.core import PE, PEmap
+from kgen.datastructure import PE, PEmap
 
 class PEmapTest(unittest.TestCase):
 

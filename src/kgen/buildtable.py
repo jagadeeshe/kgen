@@ -3,7 +3,8 @@ Created on May 30, 2011
 
 @author: jagadeesh
 '''
-from core import PEmap, KgenTable, FAIL
+from datastructure import PEmap, KgenTable
+from core import FAIL
 import logging
 
 def build_kgen_table(rule_list, rule_columns, output=None, padding=0):

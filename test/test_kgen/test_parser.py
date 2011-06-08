@@ -7,7 +7,7 @@ import unittest
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
 from test_kgen.mock_ast import MockAST
-from kgen.core import PE
+from kgen.datastructure import PE
 from StringIO import StringIO
 
 class parserTest(unittest.TestCase):

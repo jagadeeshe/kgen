@@ -6,8 +6,9 @@ Created on May 5, 2011
 
 from ply import yacc
 import core
-from core import PE, cross_product, mark_alternate, add_optional_lhs, add_obligatory_lhs
+from core import cross_product, mark_alternate, add_optional_lhs, add_obligatory_lhs
 import copy
+from datastructure import PE
 
 """
 Example rules:  (blanks are ignored)
