@@ -55,7 +55,7 @@ class buildtableTest(unittest.TestCase):
         self.do_test(input, output)
 
 
-    def t2est_only_rule_case3(self):
+    def test_only_rule_case3(self):
         input = " RULE    p:b <=> _ +:0 m"
         output = '''
            p p + m @
@@ -109,7 +109,7 @@ class buildtableTest(unittest.TestCase):
         self.do_test(input, output)
 
 
-    def t2est_only_rule_case7(self):
+    def test_only_rule_case7(self):
         input = " RULE    p:b <=> m +:0 _ "
         output = '''
            p p m + @
@@ -161,7 +161,7 @@ class buildtableTest(unittest.TestCase):
         self.do_test(input, output)
 
 
-    def t2est_only_rule_case11(self):
+    def test_only_rule_case11(self):
         input = " RULE    s:z <=> v _ v"
         output = '''
            s s v @
