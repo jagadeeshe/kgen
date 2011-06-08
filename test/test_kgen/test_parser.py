@@ -139,7 +139,7 @@ class parserTest(unittest.TestCase):
         self.assertEqual(1, mockAST.error)
         self.assertEqual('Line 2: subset should have name. see the rule for naming a subset.\n', self.output.getvalue())
         self.assertEqual(1, len(mockAST.subsets))
-        self.assertEqual('bcdf', mockAST.subsets['C'])
+        self.assertEqual('bcdf', mockAST.get_subset('C'))
 
 
     def test_p_subset_no_segment_string(self):
@@ -154,7 +154,7 @@ class parserTest(unittest.TestCase):
         self.assertEqual(1, mockAST.error)
         self.assertEqual('Line 2: subset definition should be on the same line.\n', self.output.getvalue())
         self.assertEqual(1, len(mockAST.subsets))
-        self.assertEqual('bcdf', mockAST.subsets['C'])
+        self.assertEqual('bcdf', mockAST.get_subset('C'))
 
 
     def test_p_duplicate_subset_definition(self):
@@ -170,8 +170,8 @@ class parserTest(unittest.TestCase):
         self.assertEqual(0, mockAST.error)
         self.assertEqual('Line 3: subset A is already defined in line 2.\n', self.output.getvalue())
         self.assertEqual(2, len(mockAST.subsets))
-        self.assertEqual('a', mockAST.subsets['A'])
-        self.assertEqual('bcdf', mockAST.subsets['C'])
+        self.assertEqual('a', mockAST.get_subset('A'))
+        self.assertEqual('bcdf', mockAST.get_subset('C'))
 
 
     def test_p_subsets(self):
@@ -184,8 +184,8 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual(2, len(mockAST.subsets))
-        self.assertEqual('a', mockAST.subsets['V'])
-        self.assertEqual('bcdf', mockAST.subsets['C'])
+        self.assertEqual('a', mockAST.get_subset('V'))
+        self.assertEqual('bcdf', mockAST.get_subset('C'))
 
 
     def test_p_pairlist(self):
