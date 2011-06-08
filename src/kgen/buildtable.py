@@ -11,6 +11,11 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
     table = KgenTable(1)
     log = logging.getLogger("KgenBuilder")
     
+    def eachcell():
+        for state in table:
+            for col_idx, col in columns:
+                yield state, col_idx, col
+    
     def create_lhs_columns(rule_columns):
         for pe in rule_columns:
             columns.add(pe)
@@ -84,33 +89,31 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
         return longrow
     
     def add_default_transitions():
-        for state in table:
-            for col_idx, col in columns:
-                if table[state, col_idx] != 0:
-                    ''' if the state is not 0 means the [state, col_idx] position has a transition to some state or FAIL entry '''
-                    continue
-                if table[state].committed:
-                    ''' only rule - states traversed after the special correspondence is recognized '''
-                    back = FAIL
+        for state, col_idx, col in eachcell():
+            if table[state, col_idx] != 0:
+                ''' if the state is not 0 means the [state, col_idx] position has a transition to some state or FAIL entry '''
+                continue
+            if table[state].committed:
+                ''' only rule - states traversed after the special correspondence is recognized '''
+                back = FAIL
+            else:
+                back = compute_back_loop(state, col_idx, col)
+                if col.defaultToFail():
+                    if not table[back].committed:
+                        ''' only rule - special correspondence column transition to FAIL state '''
+                        back = FAIL
                 else:
-                    back = compute_back_loop(state, col_idx, col)
-                    if col.defaultToFail():
-                        if not table[back].committed:
-                            ''' only rule - special correspondence column transition to FAIL state '''
-                            back = FAIL
-                    else:
-                        if table[back].committed:
-                            back = 1
-                
-                table.add_transition(state, col_idx, back)
+                    if table[back].committed:
+                        back = 1
+            
+            table.add_transition(state, col_idx, back)
     
     def add_back_loops():
-        for state in table:
-            for col_idx, col in columns:
-                if table[state, col_idx] == 1:
-                    back = compute_back_loop(state, col_idx, col)
-                    if not table[back].committed:
-                        table.add_transition(state, col_idx, back)
+        for state, col_idx, col in eachcell():
+            if table[state, col_idx] == 1:
+                back = compute_back_loop(state, col_idx, col)
+                if not table[back].committed:
+                    table.add_transition(state, col_idx, back)
     
     create_lhs_columns(rule_columns)
     create_rule_columns(rule_list)
