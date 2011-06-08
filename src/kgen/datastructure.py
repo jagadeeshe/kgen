@@ -186,3 +186,62 @@ class KgenTable(object):
             output += '\n'
         return output
 
+
+NODE_TYPE_COMMENT = 1
+NODE_TYPE_SUBSET = 2
+NODE_TYPE_PAIR = 3
+NODE_TYPE_RULE = 4
+
+class Node(object):
+    def __init__(self, type, value):
+        self.type = type
+        self.value = value
+
+
+class ParseTree(object):
+    def __init__(self):
+        self.kimmo_comments = []
+        self.subsets = {}
+        self.pairs = {}
+        self.rules = []
+        self.lhs = None
+        self.operator = ''
+        self.rhs = None
+        self.columns = []
+    
+    def r_error(self):
+        pass
+    
+    def add_ruleset(self):
+        pass
+    
+    def r_eol_term(self):
+        pass
+    
+    def r_opt_eol(self):
+        pass
+    
+    def r_opt_eol_empty(self):
+        pass
+    
+    def add_kimmo_comment(self, comment):
+        self.kimmo_comments.append(comment)
+    
+    def has_subset_name(self, name):
+        return self.subsets.has_key(name)
+    
+    def get_subset(self, name):
+        return self.subsets[name][1]
+    
+    def subset_lineno(self, name):
+        return self.subsets[name][0]
+    
+    def add_subset(self, subset, lineno):
+        self.subsets[subset[0]] = (lineno, subset[1])
+    
+    def add_pair(self, s1, s2):
+        for i in range(len(s1)):
+            self.pairs[(s1[i], s2[i])] = True
+    
+    def add_rule(self, lineno):
+        self.rules.append((lineno, self.rhs, self.columns))
