@@ -131,11 +131,11 @@ class KgenParser:
         pass
 
     def p_rules_list(self, p):
-        'rules : rules rule'
+        'rules : rules rule kimmo_comments'
         pass
 
     def p_rule(self, p):
-        'rule : RULE opt_eol lhs rhs EOL kimmo_comments'
+        'rule : RULE opt_eol lhs rhs EOL'
         self.ast.rhs = p[4]
         self.ast.add_rule(p.lineno(3))
 
