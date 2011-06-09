@@ -28,7 +28,7 @@ class MockAST:
     def add_ruleset(self):
         self.ruleset += 1
     
-    def r_eol_term(self):
+    def add_eol(self):
         self.eol_term += 1
     
     def r_opt_eol(self):

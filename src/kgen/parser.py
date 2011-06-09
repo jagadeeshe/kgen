@@ -62,11 +62,11 @@ class KgenParser:
 
     def p_eol_term(self, p):
         'eol : EOL'
-        self.ast.r_eol_term()
+        self.ast.add_eol()
 
     def p_eol(self, p):
         'eol : eol EOL'
-        self.ast.r_eol_term()
+        self.ast.add_eol()
 
     def p_opt_eol_empty(self, p):
         'opt_eol : empty'

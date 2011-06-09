@@ -8,6 +8,7 @@ from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
 from kgen.datastructure import ParseTree
 from StringIO import StringIO
+from kgen.datastructure import NODE_TYPE_NEWLINE
 
 class ParseTreeTest(unittest.TestCase):
 
@@ -24,9 +25,19 @@ class ParseTreeTest(unittest.TestCase):
         self.assertEqual(output, [node.type for node in ptree])
 
     def test_empty(self):
-        input = ''
-        self.do_test(input, [])
+        data = ''
+        self.do_test(data, [])
 
+    def test_newline(self):
+        data = '''
+        '''
+        self.do_test(data, [NODE_TYPE_NEWLINE])
+
+    def test_newlines(self):
+        data = '''
+        
+        '''
+        self.do_test(data, [NODE_TYPE_NEWLINE, NODE_TYPE_NEWLINE])
 
 if __name__ == "__main__":
     unittest.main()

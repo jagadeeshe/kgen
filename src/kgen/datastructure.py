@@ -217,8 +217,8 @@ class ParseTree(object):
     def add_ruleset(self):
         pass
     
-    def r_eol_term(self):
-        pass
+    def add_eol(self):
+        self.nodes.append(Node(NODE_TYPE_NEWLINE, '\n'))
     
     def r_opt_eol(self):
         pass
