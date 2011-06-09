@@ -77,7 +77,7 @@ class KgenParser:
         self.ast.r_opt_eol()
 
     def p_subsets(self, p):
-        'subsets : subsets subset'
+        'subsets : subsets subset kimmo_comments'
         pass
 
     def p_subsets_empty(self, p):
@@ -85,7 +85,7 @@ class KgenParser:
         pass
 
     def p_subset(self, p):
-        'subset : SUBSET SUBSET_NAME segment_string EOL kimmo_comments'
+        'subset : SUBSET SUBSET_NAME segment_string EOL'
         if self.ast.has_subset_name(p[2]):
             print >> self.output, "Line %d: subset %s is already defined in line %s." % (p.lineno(1), p[2], self.ast.subset_lineno(p[2]))
             return
@@ -93,12 +93,12 @@ class KgenParser:
         self.ast.add_subset(p[0], p.lineno(1))
 
     def p_unnamed_subset_error(self, p):
-        'subset : SUBSET error segment_string EOL kimmo_comments'
+        'subset : SUBSET error segment_string EOL'
         print >> self.output, "Line %d: subset should have name. see the rule for naming a subset." % p.lineno(1)
         self.parser.errok()
 
     def p_subset_definition_not_found(self, p):
-        'subset : SUBSET SUBSET_NAME error EOL kimmo_comments'
+        'subset : SUBSET SUBSET_NAME error EOL'
         print >> self.output, "Line %d: subset definition should be on the same line." % p.lineno(1)
         self.parser.errok()
 
