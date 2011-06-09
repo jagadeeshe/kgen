@@ -187,10 +187,11 @@ class KgenTable(object):
         return output
 
 
-NODE_TYPE_COMMENT = 1
+NODE_TYPE_KIMMOCOMMENT = 1
 NODE_TYPE_SUBSET = 2
 NODE_TYPE_PAIR = 3
 NODE_TYPE_RULE = 4
+NODE_TYPE_NEWLINE = 5
 
 class Node(object):
     def __init__(self, type, value):
@@ -200,6 +201,7 @@ class Node(object):
 
 class ParseTree(object):
     def __init__(self):
+        self.nodes = []
         self.kimmo_comments = []
         self.subsets = {}
         self.pairs = {}
@@ -245,3 +247,7 @@ class ParseTree(object):
     
     def add_rule(self, lineno):
         self.rules.append((lineno, self.rhs, self.columns))
+
+    def __iter__(self):
+        for node in self.nodes:
+            yield node
