@@ -6,7 +6,8 @@ Created on Jun 9, 2011
 import unittest
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
-from kgen.datastructure import ParseTree, NODE_TYPE_KIMMOCOMMENT
+from kgen.datastructure import ParseTree, NODE_TYPE_KIMMOCOMMENT,\
+    NODE_TYPE_SUBSET
 from StringIO import StringIO
 from kgen.datastructure import NODE_TYPE_NEWLINE
 
@@ -46,5 +47,15 @@ class ParseTreeTest(unittest.TestCase):
         !;second comment
         '''
         self.do_test(data, [NODE_TYPE_NEWLINE, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_NEWLINE, NODE_TYPE_KIMMOCOMMENT])
+
+    def test_subsets(self):
+        data = '''
+        !; consonent subset
+        SUBSET C b c d f
+        !; wovel subset
+        SUBSET V a e i o u
+        '''
+        self.do_test(data, [NODE_TYPE_NEWLINE, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_SUBSET, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_SUBSET])
+
 if __name__ == "__main__":
     unittest.main()

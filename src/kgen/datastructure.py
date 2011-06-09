@@ -239,6 +239,7 @@ class ParseTree(object):
     
     def add_subset(self, subset, lineno):
         self.subsets[subset[0]] = (lineno, subset[1])
+        self.nodes.append(Node(NODE_TYPE_SUBSET, (lineno, subset[0], subset[1])))
     
     def add_pair(self, s1, s2):
         for i in range(len(s1)):
