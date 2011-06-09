@@ -202,7 +202,6 @@ class Node(object):
 class ParseTree(object):
     def __init__(self):
         self.nodes = []
-        self.kimmo_comments = []
         self.subsets = {}
         self.pairs = {}
         self.rules = []
@@ -227,7 +226,7 @@ class ParseTree(object):
         pass
     
     def add_kimmo_comment(self, comment):
-        self.kimmo_comments.append(comment)
+        self.nodes.append(Node(NODE_TYPE_KIMMOCOMMENT, comment))
     
     def has_subset_name(self, name):
         return self.subsets.has_key(name)

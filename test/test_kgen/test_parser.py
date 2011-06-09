@@ -37,7 +37,7 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual([';kimmo comment'], mockAST.kimmo_comments)
-        self.assertEqual(1, mockAST.eol_term)
+        self.assertEqual(0, mockAST.eol_term)
 
 
     def test_p_kimmo_comments(self):
@@ -49,7 +49,7 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual([';first comment', ';second comment'], mockAST.kimmo_comments)
-        self.assertEqual(2, mockAST.eol_term)
+        self.assertEqual(0, mockAST.eol_term)
 
 
     def test_p_kimmo_comments_spaced(self):
@@ -63,7 +63,7 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual([';first comment', ';second comment'], mockAST.kimmo_comments)
-        self.assertEqual(4, mockAST.eol_term)
+        self.assertEqual(2, mockAST.eol_term)
 
 
     def test_p_eol_term(self):

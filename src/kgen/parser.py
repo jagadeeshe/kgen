@@ -49,7 +49,7 @@ class KgenParser:
         self.ast.add_ruleset()
 
     def p_kimmo_comments_list(self, p):
-        'kimmo_comments : kimmo_comments kimmo_comment eol'
+        'kimmo_comments : kimmo_comments kimmo_comment opt_eol'
         pass
 
     def p_kimmo_comments_empty(self, p):
@@ -57,7 +57,7 @@ class KgenParser:
         pass
 
     def p_kimmo_comment(self, p):
-        'kimmo_comment :  KIMMO_COMMENT'
+        'kimmo_comment :  KIMMO_COMMENT EOL'
         self.ast.add_kimmo_comment(p[1])
 
     def p_eol_term(self, p):
