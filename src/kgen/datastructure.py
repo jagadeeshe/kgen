@@ -203,7 +203,6 @@ class ParseTree(object):
     def __init__(self):
         self.nodes = []
         self.subsets = {}
-        self.pairs = {}
         self.rules = []
         self.lhs = None
         self.operator = ''
@@ -242,8 +241,7 @@ class ParseTree(object):
         self.nodes.append(Node(NODE_TYPE_SUBSET, (lineno, subset[0], subset[1])))
     
     def add_pair(self, s1, s2):
-        for i in range(len(s1)):
-            self.pairs[(s1[i], s2[i])] = True
+        self.nodes.append(Node(NODE_TYPE_PAIR, (s1, s2)))
     
     def add_rule(self, lineno):
         self.rules.append((lineno, self.rhs, self.columns))

@@ -7,7 +7,7 @@ import unittest
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
 from kgen.datastructure import ParseTree, NODE_TYPE_KIMMOCOMMENT,\
-    NODE_TYPE_SUBSET
+    NODE_TYPE_SUBSET, NODE_TYPE_PAIR
 from StringIO import StringIO
 from kgen.datastructure import NODE_TYPE_NEWLINE
 
@@ -56,6 +56,15 @@ class ParseTreeTest(unittest.TestCase):
         SUBSET V a e i o u
         '''
         self.do_test(data, [NODE_TYPE_NEWLINE, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_SUBSET, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_SUBSET])
+
+    def test_pairs(self):
+        data = '''
+        SUBSET C b c d
+        !; default correspondence
+        PAIRS b c d +
+              b c d 0
+        '''
+        self.do_test(data, [NODE_TYPE_NEWLINE, NODE_TYPE_SUBSET, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_PAIR])
 
 if __name__ == "__main__":
     unittest.main()
