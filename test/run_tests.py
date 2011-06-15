@@ -9,7 +9,7 @@ import sys
 import unittest
 
 sys.path.append('../src')
-sys.path.append('../lib/ply-3.4-py2.6.egg')
+sys.path.append('../')
 
 import test_kgen
 import test_functional
@@ -18,5 +18,7 @@ if __name__ == "__main__":
     tests = []
     tests += test_kgen.all_tests()
     tests += test_functional.all_tests()
+    suite = unittest.TestSuite()
+    suite.addTests(tests)
     
-    unittest.TextTestRunner().run(tests)
+    unittest.TextTestRunner().run(suite)

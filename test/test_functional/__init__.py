@@ -7,6 +7,6 @@ import unittest
 from test_compiler import CompilerTest
 
 def all_tests():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(CompilerTest))
+    suite = []
+    suite.append(unittest.makeSuite(CompilerTest))
     return suite

@@ -6,7 +6,7 @@
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.6</pydev_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/kgen/src</path>
-<path>/kgen/lib/ply-3.4-py2.6.egg</path>
 <path>/kgen/test</path>
+<path>/kgen</path>
 </pydev_pathproperty>
 </pydev_project>

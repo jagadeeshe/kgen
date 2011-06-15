@@ -15,12 +15,12 @@ from test_buildtable import buildtableTest
 from test_ParseTree import ParseTreeTest
 
 def all_tests():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(tokenizerTest))
-    suite.addTest(unittest.makeSuite(PatternElementTest))
-    suite.addTest(unittest.makeSuite(PEmapTest))
-    suite.addTest(unittest.makeSuite(parserTest))
-    suite.addTest(unittest.makeSuite(KgenTableTest))
-    suite.addTest(unittest.makeSuite(buildtableTest))
-    suite.addTest(unittest.makeSuite(ParseTreeTest))
+    suite = []
+    suite.append(unittest.makeSuite(tokenizerTest))
+    suite.append(unittest.makeSuite(PatternElementTest))
+    suite.append(unittest.makeSuite(PEmapTest))
+    suite.append(unittest.makeSuite(parserTest))
+    suite.append(unittest.makeSuite(KgenTableTest))
+    suite.append(unittest.makeSuite(buildtableTest))
+    suite.append(unittest.makeSuite(ParseTreeTest))
     return suite
