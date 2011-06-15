@@ -1,0 +1,2 @@
+; this is the first rule file
+; from this we define what to do

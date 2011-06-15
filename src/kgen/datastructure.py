@@ -192,11 +192,17 @@ NODE_TYPE_SUBSET = 2
 NODE_TYPE_PAIR = 3
 NODE_TYPE_RULE = 4
 NODE_TYPE_NEWLINE = 5
+NODE_TYPE_STRING = 6
+NODE_TYPE_KIMMOHEADER = 7
+NODE_TYPE_KIMMOTABLE = 8
 
 class Node(object):
     def __init__(self, type, value):
         self.type = type
         self.value = value
+    
+    def __repr__(self):
+        return "<%s, %s>" % (self.type, self.value)
 
 
 class ParseTree(object):

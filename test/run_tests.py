@@ -11,8 +11,12 @@ import unittest
 sys.path.append('../src')
 sys.path.append('../lib/ply-3.4-py2.6.egg')
 
-from test_kgen import all_tests
+import test_kgen
+import test_functional
 
 if __name__ == "__main__":
-    tests = all_tests()
+    tests = []
+    tests += test_kgen.all_tests()
+    tests += test_functional.all_tests()
+    
     unittest.TextTestRunner().run(tests)
