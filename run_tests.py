@@ -5,12 +5,7 @@ Created on Jun 10, 2011
 
 @author: jagadeesh
 '''
-import sys
 import unittest
-
-sys.path.append('../src')
-sys.path.append('../')
-
 import test_kgen
 import test_functional
 
