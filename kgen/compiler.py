@@ -22,6 +22,7 @@ def compile(input, output, error, options):
     kparser = KgenParser(klexer, error, ptree)
 
     ''' tokenize and parse the input string '''
+    input = input.decode(options.encoding)
     kparser.parse(input)
     
     ''' now @ptree will have complete parse tree for the input '''

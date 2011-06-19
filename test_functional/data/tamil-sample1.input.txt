@@ -1,0 +1,10 @@
+!;      Tamil Two-level rule system 
+
+!;  Tamil vowels
+SUBSET    V    a ā i ī u ū e ē o ō
+
+!; special vowel
+SUBSET    S    ḥ
+
+!;  Tamil consonents
+SUBSET    C    k ṅ c ñ ṭ ṇ t n p m y r l v ḻ ḷ ṟ ṉ

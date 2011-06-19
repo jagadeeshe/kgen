@@ -13,6 +13,23 @@ class TableBuilderVisitor(Visitor):
     
     def visit_kimmo_header(self, value):
         '@value - tuple (alphabet, null, any, bondary)'
+        alphabet, null, any, boundry = value
+        buf = 'ALPHABET   '
+        for a in alphabet:
+            buf += ' %s' % a
+        print >>self.output, buf
+        print >>self.output, "NULL    %s" % null
+        print >>self.output, "ANY     %s" % any
+        print >>self.output, "BOUNDARY %s" % boundry
+        print >>self.output
+    
+    def visit_subset(self, value):
+        '@value - tuple (lineno, subset_name, subset_string)'
+        _, name, subset = value
+        buf = "SUBSET    %s   " % name
+        for a in subset:
+            buf += ' %s' % a
+        print >>self.output, buf
     
     def visit_kimmo_table(self, value):
         '@value - KGenTable'

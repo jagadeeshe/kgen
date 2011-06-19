@@ -27,6 +27,9 @@ class Visitor(object):
             NODE_TYPE_KIMMOTABLE   : self.visit_kimmo_table,
         }
     
+    def start(self):
+        pass
+    
     def visit_newline(self, value):
         '@value - "\n" character'
         self.nodes.append(Node(NODE_TYPE_STRING, ''))
@@ -57,6 +60,7 @@ class Visitor(object):
         '@value - tuple (alphabet, null, any, bondary)'
     
     def visit_parse_tree(self, nodes):
+        self.start()
         for node in nodes:
             self.callbacks[node.type](node.value)
         

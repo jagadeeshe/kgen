@@ -6,6 +6,7 @@ Created on Jun 15, 2011
 import os
 import unittest
 import glob
+from UserDict import UserDict
 from StringIO import StringIO
 from kgen import compiler
 
@@ -19,7 +20,8 @@ def get_file_content(fname):
 class CompilerTest(unittest.TestCase):
     
     def test_functional(self):
-        options = {}
+        options = UserDict()
+        options.encoding = 'utf-8'
         datafiles = self.get_data_files()
         for infile, outfile, errfile in datafiles:
             print "testing... %s" % os.path.basename(infile)
@@ -30,9 +32,9 @@ class CompilerTest(unittest.TestCase):
             output = output_stream.getvalue()
             error = error_stream.getvalue()
             if error:
-                self.assertEqual(error, get_file_content(errfile))
+                self.assertEqual(error, get_file_content(errfile).decode(options.encoding))
             else:
-                self.assertEqual(output, get_file_content(outfile))
+                self.assertEqual(output.encode(options.encoding), get_file_content(outfile))
     
     def get_data_dir(self):
         curpath = os.path.abspath(__file__)

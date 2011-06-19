@@ -8,13 +8,15 @@ from kgen.visitor import Visitor
 from kgen.datastructure import Node, NODE_TYPE_KIMMOHEADER, NODE_TYPE_SUBSET, NODE_TYPE_KIMMOTABLE
 
 class CodeGeneratorVisitor(Visitor):
-    alphabet = set()
-    first_rule = True
+    def start(self):
+        self.alphabet = set()
+        self.first_rule = True
     
     def visit_subset(self, value):
         '@value - tuple (lineno, subset_name, subset_string)'
         _, _, subset = value
         self._add_to_alphabet(subset)
+        self.nodes.append(Node(NODE_TYPE_SUBSET, value))
     
     def visit_pair(self, value):
         '@value - tuple (lineno, lex_string, sur_string)'
@@ -37,9 +39,15 @@ class CodeGeneratorVisitor(Visitor):
             if node.type == NODE_TYPE_SUBSET:
                 break
             index += 1
-        self.nodes.insert(index, Node(NODE_TYPE_KIMMOHEADER, (alphabet, '0', '@', '#')))
+        self.nodes.insert(index-1, Node(NODE_TYPE_KIMMOHEADER, (alphabet, '0', '@', '#')))
     
     def _add_to_alphabet(self, string):
         for s in string:
             self.alphabet.add(s)
+    
+    def visit_rules_end(self):
+        'called when rules section ends'
+        if self.first_rule:
+            self.prepare_kimmo_header()
+            self.first_rule = False
     
