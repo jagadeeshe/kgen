@@ -1,0 +1,13 @@
+; testing pairs
+
+
+; default correspondence rules
+ALPHABET    a e i o u
+NULL        0
+ANY         @
+BOUNDARY    #
+
+   a e i o u
+   a e i o u
+  -----------
+1: 1 1 1 1 1

@@ -71,10 +71,11 @@ class PatternElement(object):
 PE = PatternElement
 
 class PEmap(object):
-    def __init__(self, padding=0):
+    def __init__(self, padding=0, any_column=True):
         self.column_to_index = {}
         self.index_to_column = []
         self.padding = padding
+        self.any_column = any_column
     
     def add(self, pe):
         if not self.column_to_index.has_key((pe.lex, pe.sur)):
@@ -111,16 +112,18 @@ class PEmap(object):
             output1 += ' %s' % pe.lex
             output2 += ' %s' % pe.sur
             output3 += '--'
-        output1 += ' @'
-        output2 += ' @'
-        output3 += '--'
+        if self.any_column:
+            output1 += ' @'
+            output2 += ' @'
+            output3 += '--'
         return "%s\n%s\n%s-" % (output1, output2, output3)
 
 
 class KgenTable(object):
-    def __init__(self, column_size, padding=0):
+    def __init__(self, column_size, padding=0, any_column=True):
         self.column_size = column_size
         self.padding = padding
+        self.any_column = any_column
         self.rows = []
         self._add_default_row()
         self._add_default_row()
@@ -179,10 +182,11 @@ class KgenTable(object):
                 output += ':'
             for c in range(self.column_size):
                 output += ' %d' % max(0, self[r,c])
-            if self[r].committed:
-                output += ' 0'
-            else:
-                output += ' 1'
+            if self.any_column:
+                if self[r].committed:
+                    output += ' 0'
+                else:
+                    output += ' 1'
             output += '\n'
         return output
 

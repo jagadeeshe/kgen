@@ -2,9 +2,9 @@
 ; from this we define what to do
 
 ALPHABET    a b c d e f g h i j k l m n o p q r s t u v w y z
-NULL    0
-ANY     @
-BOUNDARY #
+NULL        0
+ANY         @
+BOUNDARY    #
 
 ; vowel
 SUBSET    V    a e i o u

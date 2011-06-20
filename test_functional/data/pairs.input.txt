@@ -1,0 +1,6 @@
+!; testing pairs
+; testing pairs
+
+!; default correspondence rules
+PAIRS    a e i o u
+         a e i o u

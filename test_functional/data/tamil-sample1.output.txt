@@ -1,9 +1,9 @@
 ;      Tamil Two-level rule system 
 
 ALPHABET    a c e i k l m n o p r t u v y ñ ā ē ī ō ū ḥ ḷ ḻ ṅ ṇ ṉ ṟ ṭ
-NULL    0
-ANY     @
-BOUNDARY #
+NULL        0
+ANY         @
+BOUNDARY    #
 
 ;  Tamil vowels
 SUBSET    V    a ā i ī u ū e ē o ō

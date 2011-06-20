@@ -3,8 +3,8 @@ Created on May 30, 2011
 
 @author: jagadeesh
 '''
-from datastructure import PEmap, KgenTable
-from core import FAIL
+from kgen.datastructure import PEmap, KgenTable, PE
+from kgen.core import FAIL
 import logging
 
 def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
@@ -127,3 +127,15 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
     print output
     return output
 
+
+def build_pair_table(lexseg, surseg, padding=0):
+    columns = PEmap(padding=padding, any_column=False)
+    for i in range(len(lexseg)):
+        lex = lexseg[i]
+        sur = surseg[i]
+        columns.add(PE(lex,sur))
+    
+    table = KgenTable(len(columns), padding=padding, any_column=False)
+    for col_idx, _ in columns:
+        table.add_transition(1, col_idx, 1)
+    return columns, table

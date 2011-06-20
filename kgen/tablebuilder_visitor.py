@@ -18,9 +18,9 @@ class TableBuilderVisitor(Visitor):
         for a in alphabet:
             buf += ' %s' % a
         print >>self.output, buf
-        print >>self.output, "NULL    %s" % null
-        print >>self.output, "ANY     %s" % any
-        print >>self.output, "BOUNDARY %s" % boundry
+        print >>self.output, "NULL        %s" % null
+        print >>self.output, "ANY         %s" % any
+        print >>self.output, "BOUNDARY    %s" % boundry
         print >>self.output
     
     def visit_subset(self, value):
@@ -32,5 +32,8 @@ class TableBuilderVisitor(Visitor):
         print >>self.output, buf
     
     def visit_kimmo_table(self, value):
-        '@value - KGenTable'
-    
+        '@value - PEmap, KGenTable'
+        columns, table = value
+        tablestr = '%s' % table
+        print >>self.output, columns
+        print >>self.output, tablestr[:-1]

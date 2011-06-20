@@ -6,6 +6,7 @@ Created on Jun 14, 2011
 
 from kgen.visitor import Visitor
 from kgen.datastructure import Node, NODE_TYPE_KIMMOHEADER, NODE_TYPE_SUBSET, NODE_TYPE_KIMMOTABLE
+from kgen.buildtable import build_pair_table
 
 class CodeGeneratorVisitor(Visitor):
     def start(self):
@@ -20,9 +21,11 @@ class CodeGeneratorVisitor(Visitor):
     
     def visit_pair(self, value):
         '@value - tuple (lineno, lex_string, sur_string)'
-        _, s1, s2 = value
+        s1, s2 = value
         self._add_to_alphabet(s1)
         self._add_to_alphabet(s2)
+        table = build_pair_table(s1, s2)
+        self.nodes.append(Node(NODE_TYPE_KIMMOTABLE, table))
     
     def visit_rule(self, value):
         '@value - tuple (lineno, rule, columns)'
