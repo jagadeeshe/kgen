@@ -1,0 +1,8 @@
+!; simple rule
+PAIRS   p b + m
+        p b 0 m
+
+
+!;RULE    p:b => _ +:0 m
+!;------------------------
+RULE    p:b => _ +:0 m

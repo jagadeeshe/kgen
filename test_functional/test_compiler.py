@@ -32,7 +32,7 @@ class CompilerTest(unittest.TestCase):
             output = output_stream.getvalue()
             error = error_stream.getvalue()
             if error:
-                self.assertEqual(error, get_file_content(errfile).decode(options.encoding))
+                self.assertEqual(error.encode(options.encoding), get_file_content(errfile))
             else:
                 self.assertEqual(output.encode(options.encoding), get_file_content(outfile))
     

@@ -1,12 +1,12 @@
 ; testing pairs
 
 
-; default correspondence rules
 ALPHABET    a e i o u
 NULL        0
 ANY         @
 BOUNDARY    #
 
+; default correspondence rules
    a e i o u
    a e i o u
   -----------

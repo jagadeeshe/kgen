@@ -1,7 +1,7 @@
 ; this is the first rule file
 ; from this we define what to do
 
-ALPHABET    a b c d e f g h i j k l m n o p q r s t u v w y z
+ALPHABET    a b c d e f g h i j k l m n o p q r s t u v w x y z
 NULL        0
 ANY         @
 BOUNDARY    #
@@ -10,4 +10,4 @@ BOUNDARY    #
 SUBSET    V    a e i o u
 
 ; consonent
-SUBSET    C    b c d f g h j k l m n p q r s t v w z y z
+SUBSET    C    b c d f g h j k l m n p q r s t v w x y z
