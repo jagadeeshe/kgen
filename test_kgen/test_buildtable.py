@@ -25,8 +25,9 @@ class buildtableTest(unittest.TestCase):
         padding = 8
         mockAST = MockAST()
         self.kparser.parse(input+"\n", mockAST)
-        result = build_kgen_table(mockAST.rules[0][2], mockAST.rules[0][3], padding=padding)
-        self.assertEqual(output, "\n%s%s" % (result, ' ' * padding))
+        columns, table = build_kgen_table(mockAST.rules[0][2], mockAST.rules[0][3], padding=padding)
+        print "%s\n%s" % (columns, table)
+        self.assertEqual(output, "\n%s\n%s%s" % (columns, table, ' ' * padding))
 
 
     def test_only_rule_case1(self):

@@ -123,9 +123,7 @@ def build_kgen_table(rule_list, rule_columns, output=None, padding=0):
     add_default_transitions()
     add_back_loops()
     
-    output = "%s\n%s" %(columns, table)
-    print output
-    return output
+    return (columns, table)
 
 
 def build_pair_table(lexseg, surseg, padding=0):
