@@ -639,6 +639,3 @@ class parserTest(unittest.TestCase):
         self.assertEqual(1, len(mockAST.rules))
         self.assertEqual(([[PE('p','b')]], '/<=', [[PE('a'), PE('p','b'), PE('c')]], []), mockAST.rules[0])
 
-
-if __name__ == "__main__":
-    unittest.main()

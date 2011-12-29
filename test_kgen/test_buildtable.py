@@ -20,7 +20,7 @@ class buildtableTest(unittest.TestCase):
         self.output = StringIO()
         self.kparser = KgenParser(klexer, self.output, mockAST)
 
-    def do_test(self, input, output):
+    def do_tst(self, input, output):
         print input
         padding = 8
         mockAST = MockAST()
@@ -40,7 +40,7 @@ class buildtableTest(unittest.TestCase):
         2. 0 3 0 0
         3. 0 0 1 0
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case2(self):
@@ -53,7 +53,7 @@ class buildtableTest(unittest.TestCase):
         2: 1 2 3 1 1
         3: 1 2 1 0 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case3(self):
@@ -68,7 +68,7 @@ class buildtableTest(unittest.TestCase):
         4. 0 0 5 0 0
         5. 0 0 0 1 0
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case4(self):
@@ -81,7 +81,7 @@ class buildtableTest(unittest.TestCase):
         2: 2 3 1 1
         3: 2 1 0 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case5(self):
@@ -94,7 +94,7 @@ class buildtableTest(unittest.TestCase):
         2: 0 2 3 1
         3: 1 2 1 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case6(self):
@@ -107,7 +107,7 @@ class buildtableTest(unittest.TestCase):
         2: 1 1 2 3 1
         3: 1 0 2 1 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case7(self):
@@ -120,7 +120,7 @@ class buildtableTest(unittest.TestCase):
         2: 0 1 2 3 1
         3: 1 0 2 1 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case8(self):
@@ -133,7 +133,7 @@ class buildtableTest(unittest.TestCase):
         2: 2 3 1 1
         3: 2 1 0 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case9(self):
@@ -146,7 +146,7 @@ class buildtableTest(unittest.TestCase):
         2: 3 2 1
         3. 0 2 0
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case10(self):
@@ -159,7 +159,7 @@ class buildtableTest(unittest.TestCase):
         2: 1 3 2 1
         3: 1 1 0 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case11(self):
@@ -173,7 +173,7 @@ class buildtableTest(unittest.TestCase):
         3: 0 1 0 1
         4. 0 0 2 0
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
     def test_only_rule_case12(self):
@@ -186,9 +186,6 @@ class buildtableTest(unittest.TestCase):
         2: 2 3 1
         3: 0 1 1
         '''
-        self.do_test(input, output)
+        self.do_tst(input, output)
 
 
-
-if __name__ == "__main__":
-    unittest.main()

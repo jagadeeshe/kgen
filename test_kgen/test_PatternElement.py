@@ -52,5 +52,3 @@ class PatternElementTest(unittest.TestCase):
         self.assertTrue(p.isREPEAT())
         self.assertTrue(p.isALTERNATIVE())
 
-if __name__ == "__main__":
-    unittest.main()

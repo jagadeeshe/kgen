@@ -61,6 +61,3 @@ class KgenTableTest(unittest.TestCase):
         for state in table:
             self.assertEqual(1, state)
 
-
-if __name__ == "__main__":
-    unittest.main()

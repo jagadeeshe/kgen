@@ -29,5 +29,3 @@ class Test(unittest.TestCase):
         target = [['a','b','d','e']]
         self.assertEqual(target, cross_product(l1, l2))
 
-if __name__ == "__main__":
-    unittest.main()

@@ -51,6 +51,3 @@ class CompilerTest(unittest.TestCase):
         return files
     
 
-
-if __name__ == "__main__":
-    unittest.main()

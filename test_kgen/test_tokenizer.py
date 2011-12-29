@@ -59,5 +59,3 @@ class tokenizerTest(unittest.TestCase):
         self.assertEqual(expectation, actual)
 
 
-if __name__ == "__main__":
-    unittest.main()

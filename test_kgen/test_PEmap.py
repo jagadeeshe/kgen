@@ -32,5 +32,3 @@ class PEmapTest(unittest.TestCase):
         self.assertEqual(1, len(pemap))
         self.assertTrue(pemap[0].defaultToFail())
 
-if __name__ == "__main__":
-    unittest.main()
