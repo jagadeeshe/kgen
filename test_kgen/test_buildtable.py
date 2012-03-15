@@ -3,189 +3,171 @@ Created on May 30, 2011
 
 @author: jagadeesh
 '''
-import unittest
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
 from test_kgen.mock_ast import MockAST
 from StringIO import StringIO
 from kgen.buildtable import build_kgen_table
 import logging
+from tests.driver import DataDrivenTest, DataRecord
 
-class buildtableTest(unittest.TestCase):
-    def __init__(self, methodName='run'):
-        unittest.TestCase.__init__(self, methodName)
-        logging.basicConfig(level=logging.DEBUG)
-        klexer = KgenLexer()
-        mockAST = MockAST()
-        self.output = StringIO()
-        self.kparser = KgenParser(klexer, self.output, mockAST)
+logging.basicConfig(level=logging.DEBUG)
 
-    def do_tst(self, input, output):
-        print input
-        padding = 8
-        mockAST = MockAST()
-        self.kparser.parse(input+"\n", mockAST)
-        columns, table = build_kgen_table(mockAST.rules[0][2], mockAST.rules[0][3], padding=padding)
-        print "%s\n%s" % (columns, table)
-        self.assertEqual(output, "\n%s\n%s%s" % (columns, table, ' ' * padding))
+class R(DataRecord):
+    def __init__(self, name, _input, expectation):
+        DataRecord.__init__(self, name, _input + "\n", expectation)
 
 
-    def test_only_rule_case1(self):
-        input = " RULE    p:b => _ +:0 m"
-        output = '''
-           p + m @
-           b 0 m @
-          ---------
-        1: 2 1 1 1
-        2. 0 3 0 0
-        3. 0 0 1 0
-        '''
-        self.do_tst(input, output)
+@DataDrivenTest([
+R('test_only_rule_case1',
+"RULE    p:b => _ +:0 m",
+'''
+   p + m @
+   b 0 m @
+  ---------
+1: 2 1 1 1
+2. 0 3 0 0
+3. 0 0 1 0
+'''),
+
+R('test_only_rule_case2',
+"RULE    p:b <= _ +:0 m",
+'''
+   p p + m @
+   b @ 0 m @
+  -----------
+1: 1 2 1 1 1
+2: 1 2 3 1 1
+3: 1 2 1 0 1
+'''),
+
+R('test_only_rule_case3',
+"RULE    p:b <=> _ +:0 m",
+'''
+   p p + m @
+   b @ 0 m @
+  -----------
+1: 4 2 1 1 1
+2: 4 2 3 1 1
+3: 4 2 1 0 1
+4. 0 0 5 0 0
+5. 0 0 0 1 0
+'''),
+
+R('test_only_rule_case4',
+"RULE    p:b /<= _ +:0 m",
+'''
+   p + m @
+   b 0 m @
+  ---------
+1: 2 1 1 1
+2: 2 3 1 1
+3: 2 1 0 1
+'''),
+
+R('test_only_rule_case5',
+"RULE    p:b => m +:0 _ ",
+'''
+   p m + @
+   b m 0 @
+  ---------
+1: 0 2 1 1
+2: 0 2 3 1
+3: 1 2 1 1
+'''),
+
+R('test_only_rule_case6',
+"RULE    p:b <= m +:0 _ ",
+'''
+   p p m + @
+   b @ m 0 @
+  -----------
+1: 1 1 2 1 1
+2: 1 1 2 3 1
+3: 1 0 2 1 1
+'''),
+
+R('test_only_rule_case7',
+"RULE    p:b <=> m +:0 _ ",
+'''
+   p p m + @
+   b @ m 0 @
+  -----------
+1: 0 1 2 1 1
+2: 0 1 2 3 1
+3: 1 0 2 1 1
+'''),
+
+R('test_only_rule_case8',
+"RULE    p:b /<= m +:0 _ ",
+'''
+   m + p @
+   m 0 b @
+  ---------
+1: 2 1 1 1
+2: 2 3 1 1
+3: 2 1 0 1
+'''),
+
+R('test_only_rule_case9',
+"RULE    s:z => v _ v",
+'''
+   s v @
+   z v @
+  -------
+1: 0 2 1
+2: 3 2 1
+3. 0 2 0
+'''),
+
+R('test_only_rule_case10',
+"RULE    s:z <= v _ v",
+'''
+   s s v @
+   z @ v @
+  ---------
+1: 1 1 2 1
+2: 1 3 2 1
+3: 1 1 0 1
+'''),
+
+R('test_only_rule_case11',
+"RULE    s:z <=> v _ v",
+'''
+   s s v @
+   z @ v @
+  ---------
+1: 0 1 2 1
+2: 4 3 2 1
+3: 0 1 0 1
+4. 0 0 2 0
+'''),
+
+R('test_only_rule_case12',
+"RULE    s:z /<= v _ v",
+'''
+   v s @
+   v z @
+  -------
+1: 2 1 1
+2: 2 3 1
+3: 0 1 1
+'''),
+
+])
+def test_buildtable(data):
+    print data
+
+    klexer = KgenLexer()
+    mockAST = MockAST()
+    output = StringIO()
+    kparser = KgenParser(klexer, output, mockAST)
+
+    kparser.parse(data, mockAST)
+    columns, table = build_kgen_table(mockAST.rules[0][2], mockAST.rules[0][3])
+    print "%s\n%s" % (columns, table)
+    return "\n%s\n%s" % (columns, table,)
 
 
-    def test_only_rule_case2(self):
-        input = " RULE    p:b <= _ +:0 m"
-        output = '''
-           p p + m @
-           b @ 0 m @
-          -----------
-        1: 1 2 1 1 1
-        2: 1 2 3 1 1
-        3: 1 2 1 0 1
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case3(self):
-        input = " RULE    p:b <=> _ +:0 m"
-        output = '''
-           p p + m @
-           b @ 0 m @
-          -----------
-        1: 4 2 1 1 1
-        2: 4 2 3 1 1
-        3: 4 2 1 0 1
-        4. 0 0 5 0 0
-        5. 0 0 0 1 0
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case4(self):
-        input = " RULE    p:b /<= _ +:0 m"
-        output = '''
-           p + m @
-           b 0 m @
-          ---------
-        1: 2 1 1 1
-        2: 2 3 1 1
-        3: 2 1 0 1
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case5(self):
-        input = " RULE    p:b => m +:0 _ "
-        output = '''
-           p m + @
-           b m 0 @
-          ---------
-        1: 0 2 1 1
-        2: 0 2 3 1
-        3: 1 2 1 1
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case6(self):
-        input = " RULE    p:b <= m +:0 _ "
-        output = '''
-           p p m + @
-           b @ m 0 @
-          -----------
-        1: 1 1 2 1 1
-        2: 1 1 2 3 1
-        3: 1 0 2 1 1
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case7(self):
-        input = " RULE    p:b <=> m +:0 _ "
-        output = '''
-           p p m + @
-           b @ m 0 @
-          -----------
-        1: 0 1 2 1 1
-        2: 0 1 2 3 1
-        3: 1 0 2 1 1
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case8(self):
-        input = " RULE    p:b /<= m +:0 _ "
-        output = '''
-           m + p @
-           m 0 b @
-          ---------
-        1: 2 1 1 1
-        2: 2 3 1 1
-        3: 2 1 0 1
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case9(self):
-        input = " RULE    s:z => v _ v"
-        output = '''
-           s v @
-           z v @
-          -------
-        1: 0 2 1
-        2: 3 2 1
-        3. 0 2 0
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case10(self):
-        input = " RULE    s:z <= v _ v"
-        output = '''
-           s s v @
-           z @ v @
-          ---------
-        1: 1 1 2 1
-        2: 1 3 2 1
-        3: 1 1 0 1
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case11(self):
-        input = " RULE    s:z <=> v _ v"
-        output = '''
-           s s v @
-           z @ v @
-          ---------
-        1: 0 1 2 1
-        2: 4 3 2 1
-        3: 0 1 0 1
-        4. 0 0 2 0
-        '''
-        self.do_tst(input, output)
-
-
-    def test_only_rule_case12(self):
-        input = " RULE    s:z /<= v _ v"
-        output = '''
-           v s @
-           v z @
-          -------
-        1: 2 1 1
-        2: 2 3 1
-        3: 0 1 1
-        '''
-        self.do_tst(input, output)
-
-
+if __name__ == "__main__":
+    test_buildtable()
