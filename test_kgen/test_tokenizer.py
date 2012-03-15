@@ -3,59 +3,48 @@ Created on May 11, 2011
 
 @author: jagadeesh
 '''
-import unittest
 from kgen.tokenizer import KgenLexer
+from tests.driver import DataDrivenTest, DataRecord
 
-class tokenizerTest(unittest.TestCase):
-
-
-    def test_tokenizer(self):
-        data = (
-            ('\n',          [('EOL', '\n')]),
-            ('SUBSET',      [('SUBSET', 'SUBSET')]),
-            ('C',           [('SUBSET_NAME', 'C')]),
-            ('Kuril',       [('SUBSET_NAME', 'Kuril')]),
-            ('a',           [('SEGMENT', 'a')]),
-            ('PAIRS',       [('PAIRS', 'PAIRS')]),
-            ('RULE',        [('RULE', 'RULE')]),
-            ('=>',          [('ONLY_OCCURS', '=>')]),
-            ('<=',          [('ALWAYS_OCCURS', '<=')]),
-            ('<=>',         [('ALWAYS_AND_ONLY_OCCURS', '<=>')]),
-            ('/<=',         [('NEVER_OCCURS', '/<=')]),
-            (':',           [('COLON', ':')]),
-            (',',           [('COMMA', ',')]),
-            ('(',           [('LPAREN', '(')]),
-            (')',           [('RPAREN', ')')]),
-            ('[',           [('LBRACKET', '[')]),
-            (']',           [('RBRACKET', ']')]),
-            ('{',           [('LBRACE', '{')]),
-            ('}',           [('RBRACE', '}')]),
-            ('|',           [('REG_OR', '|')]),
-            ('*',           [('REG_REPEAT', '*')]),
-            ('_',           [('UNDER', '_')]),
-            ('+',           [('SEGMENT', '+')]),
-            ('@',           [('SEGMENT', '@')]),
-            ("'",           [('SEGMENT', "'")]),
-            (u"\u0b85",     [('SEGMENT', u"\u0b85")]),
-            (' ',           []),
-            ('     ',       []),
-            ('\t',          []),
-            (';comment\n',  [('EOL', '\n')]),
-            ('!;kimmo\n',   [('KIMMO_COMMENT', ';kimmo'), ('EOL', '\n')]),
-        )
-        
-        for input, expectation in data:
-            self._driver(input, expectation)
-    
-    
-    def _driver(self, input, expectation):
-        if type(expectation) == tuple:
-            expectation = [expectation]
-        elif type(expectation) != list:
-            self.fail("cannot handle expectation %s" % expectation)
-        
-        klexer = KgenLexer()
-        actual = [(actual.type, actual.value) for actual in klexer.generate_tokens(input)]
-        self.assertEqual(expectation, actual)
+class R(DataRecord):
+    def __init__(self, _input, *args):
+        DataRecord.__init__(self, _input, _input, list(args))
 
 
+@DataDrivenTest([
+    R('\n',          ('EOL', '\n')),
+    R('SUBSET',      ('SUBSET', 'SUBSET')),
+    R('C',           ('SUBSET_NAME', 'C')),
+    R('Kuril',       ('SUBSET_NAME', 'Kuril')),
+    R('a',           ('SEGMENT', 'a')),
+    R('PAIRS',       ('PAIRS', 'PAIRS')),
+    R('RULE',        ('RULE', 'RULE')),
+    R('=>',          ('ONLY_OCCURS', '=>')),
+    R('<=',          ('ALWAYS_OCCURS', '<=')),
+    R('<=>',         ('ALWAYS_AND_ONLY_OCCURS', '<=>')),
+    R('/<=',         ('NEVER_OCCURS', '/<=')),
+    R(':',           ('COLON', ':')),
+    R(',',           ('COMMA', ',')),
+    R('(',           ('LPAREN', '(')),
+    R(')',           ('RPAREN', ')')),
+    R('[',           ('LBRACKET', '[')),
+    R(']',           ('RBRACKET', ']')),
+    R('{',           ('LBRACE', '{')),
+    R('}',           ('RBRACE', '}')),
+    R('|',           ('REG_OR', '|')),
+    R('*',           ('REG_REPEAT', '*')),
+    R('_',           ('UNDER', '_')),
+    R('+',           ('SEGMENT', '+')),
+    R('@',           ('SEGMENT', '@')),
+    R("'",           ('SEGMENT', "'")),
+    R(u"\u0b85",     ('SEGMENT', u"\u0b85")),
+    R(' ',           ),
+    R('     ',       ),
+    R('\t',          ),
+    R(';comment\n',  ('EOL', '\n')),
+    R('!;kimmo\n',   ('KIMMO_COMMENT', ';kimmo'), ('EOL', '\n')),
+])
+def test_tokenizer(data):
+    klexer = KgenLexer()
+    actual = [(actual.type, actual.value) for actual in klexer.generate_tokens(data)]
+    return actual
