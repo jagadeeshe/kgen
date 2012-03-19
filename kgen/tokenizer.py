@@ -75,8 +75,8 @@ class KgenLexer:
         t.lexer.skip(1)
     
     
-    def generate_tokens(self, input):
-        self.lexer.input(input)
+    def generate_tokens(self, text):
+        self.lexer.input(text)
         while True:
             tok = self.lexer.token()
             if not tok: break
