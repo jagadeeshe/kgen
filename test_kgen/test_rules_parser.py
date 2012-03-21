@@ -102,6 +102,10 @@ R('RULE p:b <= c : {a , b} _',
   [('c','a'), ('p','@')],
   [('c','b'), ('p','@')]
 ),
+R('RULE p:b <= {a , b} : c _',
+  [('a','c'), ('p','@')],
+  [('b','c'), ('p','@')]
+),
 ])
 def test_rules_parser(data):
     klexer = KgenLexer()
