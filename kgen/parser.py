@@ -314,11 +314,11 @@ class KgenParser:
         'alternate_list : alternate_list COMMA segment'
         p[0] = p[1] + [p[3]]
 
-    def parse(self, input, ast=None):
+    def parse(self, text, ast=None):
         if ast:
             self.ast = ast
         self.output.seek(0)
         self.output.truncate()
-        self.parser.parse(input=input, lexer=self.klexer.lexer)
+        self.parser.parse(input=text, lexer=self.klexer.lexer)
         
 
