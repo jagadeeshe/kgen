@@ -9,7 +9,7 @@ import sys
 import copy
 from optparse import OptionParser
 from UserDict import UserDict
-
+from datastructure import PE
 
 FAIL = -1
 
@@ -53,6 +53,12 @@ def cross_product(list1, list2):
             target.append(s1 + s2)
     return target
 
+
+def add_optional_element(list1):
+    for pe_list in list1:
+        if pe_list[0] == PE(''):
+            return
+    list1.append([PE('')])
 
 def mark_alternate(alt_list):
     itemlist = alt_list[0]

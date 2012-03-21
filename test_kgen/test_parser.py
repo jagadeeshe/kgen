@@ -389,7 +389,7 @@ class parserTest(unittest.TestCase):
         self.assertEqual(0, mockAST.error)
         self.assertEqual([[PE('a','c'), PE('b','c')]], mockAST.lc)
 
-    def test_p_pattern_element_alternate(self):
+    def test_p_segment_pair_alternate(self):
         data = '''RULE 
             p:b <= {a , b} _
         '''
@@ -397,10 +397,10 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a',flag=PE.ALTERNATIVE), PE('b')]], mockAST.lc)
+        self.assertEqual([[PE('a')], [PE('b')]], mockAST.lc)
 
 
-    def test_p_pattern_element_segment_alternate(self):
+    def test_p_segment_pair_segment_alternate(self):
         data = '''RULE 
             p:b <= c : {a , b} _
         '''
@@ -408,10 +408,10 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('c','a',PE.ALTERNATIVE), PE('c','b')]], mockAST.lc)
+        self.assertEqual([[PE('c','a')], [PE('c','b')]], mockAST.lc)
 
 
-    def test_p_pattern_element_alternate_segment(self):
+    def test_p_segment_pair_alternate_segment(self):
         data = '''RULE 
             p:b <= {a , b} : c _
         '''
@@ -419,10 +419,10 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a','c',PE.ALTERNATIVE), PE('b','c')]], mockAST.lc)
+        self.assertEqual([[PE('a','c')], [PE('b','c')]], mockAST.lc)
 
 
-    def test_p_pattern_element_alternate_alternate(self):
+    def test_p_segment_pair_alternate_alternate(self):
         data = '''RULE 
             p:b <= {a, b} : {c, d} _
         '''
@@ -430,10 +430,10 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a', 'c', PE.ALTERNATIVE), PE('b', 'd')]], mockAST.lc)
+        self.assertEqual([[PE('a', 'c')], [PE('b', 'd')]], mockAST.lc)
 
 
-    def test_p_pattern_element_alternate_any(self):
+    def test_p_segment_pair_alternate_any(self):
         data = '''RULE 
             p:b <= {a, b} :  _
         '''
@@ -441,7 +441,8 @@ class parserTest(unittest.TestCase):
         self.kparser.parse(data, mockAST)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a', '@', PE.ALTERNATIVE), PE('b', '@')]], mockAST.lc)
+        self.assertEqual([[PE('a', '@')], [PE('b', '@')]], mockAST.lc)
+
 
     def test_p_pattern_element_repeat(self):
         data = '''RULE 
@@ -489,6 +490,17 @@ class parserTest(unittest.TestCase):
         
         self.assertEqual(0, mockAST.error)
         self.assertEqual([[PE('@','a')]], mockAST.lc)
+
+
+    def test_p_pattern_list_case1(self):
+        data = '''RULE 
+            p:b <= a b {c, d} e _
+        '''
+        mockAST = MockAST()
+        self.kparser.parse(data, mockAST)
+        
+        self.assertEqual(0, mockAST.error)
+        self.assertEqual([[PE('a'), PE('b'), PE('c'), PE('e')], [PE('a'), PE('b'), PE('d'), PE('e')]], mockAST.lc)
 
 
     def test_p_pattern_element_segement_pair_list(self):

@@ -6,7 +6,7 @@ Created on May 5, 2011
 
 from ply import yacc
 import core
-from core import cross_product, mark_alternate, add_optional_lhs, add_obligatory_lhs
+from core import cross_product, add_optional_lhs, add_obligatory_lhs, add_optional_element
 import copy
 from datastructure import PE
 
@@ -232,8 +232,26 @@ class KgenParser:
 
     def p_pattern_element_repeat(self, p):
         'pattern_element : segment_pair REG_REPEAT'
-        p[1][0][0].mark_REPEAT()
+        for pe_list in p[1]:
+            pe_list[0].mark_REPEAT()
         p[0] = p[1]
+
+    def p_pattern_element_alternative_list(self, p):
+        'pattern_element : LBRACKET pattern_list alternative_list RBRACKET'
+        p[0] = p[2] + p[3]
+
+    def p_pattern_element_optional_list(self, p):
+        'pattern_element : LPAREN pattern_list RPAREN'
+        add_optional_element(p[2])
+        p[0] = p[2]
+
+    def p_alternative_list_term(self, p):
+        'alternative_list : REG_OR pattern_list'
+        p[0] = p[2]
+
+    def p_alternative_list(self, p):
+        'alternative_list : alternative_list REG_OR pattern_list'
+        p[0] = p[1] + p[3]
 
     def p_segment_pair(self, p):
         'segment_pair : segment COLON segment'
@@ -251,53 +269,28 @@ class KgenParser:
         'segment_pair : COLON segment'
         p[0] = [[PE('@', p[2])]]
 
-    def p_segment_pair_pattern_list(self, p):
-        'segment_pair : LBRACKET pattern_list alternative_list RBRACKET'
-        p[0] = p[2] + p[3]
-
-    def p_segment_pair_optional_list(self, p):
-        'segment_pair : LPAREN pattern_list RPAREN'
-        for item in p[2]:
-            if item[0] != PE(''):
-                p[2].append([PE('')])
-                break
-        p[0] = p[2]
-
-    def p_alternative_list_term(self, p):
-        'alternative_list : REG_OR pattern_list'
-        p[0] = p[2]
-
-    def p_alternative_list(self, p):
-        'alternative_list : alternative_list REG_OR pattern_list'
-        p[0] = p[1] + p[3]
-
     def p_segment_pair_alternate(self, p):
         'segment_pair : alternate'
-        p[0] = [[PE(x) for x in p[1]]]
-        mark_alternate(p[0])
+        p[0] = [[PE(x)] for x in p[1]]
 
     def p_segment_pair_segment_alternate(self, p):
         'segment_pair : segment COLON alternate'
-        p[0] = [[PE(p[1], x) for x in p[3]]]
-        mark_alternate(p[0])
+        p[0] = [[PE(p[1], x)] for x in p[3]]
 
     def p_segment_pair_alternate_segment(self, p):
         'segment_pair : alternate COLON segment'
-        p[0] = [[PE(x, p[3]) for x in p[1]]]
-        mark_alternate(p[0])
+        p[0] = [[PE(x, p[3])] for x in p[1]]
 
     def p_segment_pair_alternate_alternate(self, p):
         'segment_pair : alternate COLON alternate'
         if len(p[1]) != len(p[3]):
             # TODO: raise error
             pass
-        p[0] = [[PE(p[1][x], p[3][x]) for x in range(len(p[1]))]]
-        mark_alternate(p[0])
+        p[0] = [[PE(p[1][x], p[3][x])] for x in range(len(p[1]))]
 
     def p_segment_pair_alternate_any(self, p):
         'segment_pair : alternate COLON'
-        p[0] = [[PE(x, '@') for x in p[1]]]
-        mark_alternate(p[0])
+        p[0] = [[PE(x, '@')] for x in p[1]]
 
     def p_alternate(self, p):
         'alternate : LBRACE segment alternate_list RBRACE'
