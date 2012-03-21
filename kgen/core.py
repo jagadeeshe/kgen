@@ -60,21 +60,23 @@ def mark_alternate(alt_list):
         itemlist[i].mark_ALTERNATIVE()
 
 
-def add_optional_lhs(lhs, ast):
-    for pe in lhs:
-        ''' add commit column '''
-        pe.mark_COMMIT()
-        ast.columns.append(pe)
+def add_optional_lhs(lhs_list, ast):
+    for lhs_row in lhs_list:
+        for pe in lhs_row:
+            ''' add commit column '''
+            pe.mark_COMMIT()
+            ast.columns.append(pe)
 
 
-def add_obligatory_lhs(lhs, ast):
-    for pe in lhs:
-        ''' add normal column '''
-        pe1 = copy.deepcopy(pe)
-        ast.columns.append(pe1)
-        ''' add complement column '''
-        pe.sur = '@'
-        ast.columns.append(pe)
+def add_obligatory_lhs(lhs_list, ast):
+    for lhs_row in lhs_list:
+        for pe in lhs_row:
+            ''' add normal column '''
+            pe1 = copy.deepcopy(pe)
+            ast.columns.append(pe1)
+            ''' add complement column '''
+            pe.sur = '@'
+            ast.columns.append(pe)
 
 
 config = UserDict()

@@ -141,25 +141,25 @@ class KgenParser:
 
     def p_lhs_only_occurs(self, p):
         'lhs : lhs_pair ONLY_OCCURS'
-        add_optional_lhs(p[1][0], self.ast)
+        add_optional_lhs(p[1], self.ast)
         p[0] = p[1]
         self.ast.operator = p[2]
         self.ast.lhs = p[0]
 
     def p_lhs_always_occurs(self, p):
         'lhs : lhs_pair ALWAYS_OCCURS'
-        add_obligatory_lhs(p[1][0], self.ast)
+        add_obligatory_lhs(p[1], self.ast)
         p[0] = p[1]
         self.ast.operator = p[2]
         self.ast.lhs = p[0]
 
     def p_lhs_always_and_only_occurs(self, p):
         'lhs : lhs_pair ALWAYS_AND_ONLY_OCCURS'
-        l1 = copy.deepcopy(p[1][0])
-        p[1].append(l1)
-        add_obligatory_lhs(p[1][0], self.ast)
-        add_optional_lhs(p[1][1], self.ast)
-        p[0] = p[1]
+        l1 = p[1]
+        l2 = copy.deepcopy(l1)
+        add_obligatory_lhs(l1, self.ast)
+        add_optional_lhs(l2, self.ast)
+        p[0] = l1 + l2
         self.ast.operator = p[2]
         self.ast.lhs = p[0]
 
@@ -175,21 +175,18 @@ class KgenParser:
 
     def p_lhs_pair_segment_alternate(self, p):
         'lhs_pair : segment COLON alternate'
-        p[0] = [[PE(p[1], x) for x in p[3]]]
-        mark_alternate(p[0])
+        p[0] = [[PE(p[1], x)] for x in p[3]]
 
     def p_lhs_pair_alternate_segment(self, p):
         'lhs_pair : alternate COLON segment'
-        p[0] = [[PE(x, p[3]) for x in p[1]]]
-        mark_alternate(p[0])
+        p[0] = [[PE(x, p[3])] for x in p[1]]
 
     def p_lhs_pair_alternate_alternate(self, p):
         'lhs_pair : alternate COLON alternate'
         if len(p[1]) != len(p[3]):
             # raise error
             pass
-        p[0] = [[PE(p[1][x], p[3][x]) for x in range(len(p[1]))]]
-        mark_alternate(p[0])
+        p[0] = [[PE(p[1][x], p[3][x])] for x in range(len(p[1]))]
         self.ast.lhs = p[0]
 
     def p_rhs(self, p):

@@ -9,6 +9,7 @@ from kgen.parser import KgenParser
 from test_kgen.mock_ast import MockAST
 from kgen.datastructure import PE
 from StringIO import StringIO
+from kgen.core import cross_product
 
 class parserTest(unittest.TestCase):
 
@@ -223,13 +224,15 @@ class parserTest(unittest.TestCase):
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
-        t1 = [PE('p','b',PE.ALTERNATIVE|PE.COMMIT), PE('p','c',PE.COMMIT)]
-        t2 = [PE('a')] + t1
+        pe1 = PE('p','b',PE.COMMIT)
+        pe2 = PE('p','c',PE.COMMIT)
+        t1 = [[pe1], [pe2]]
+        t2 = cross_product([[PE('a')]], t1)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([t1], mockAST.lhs)
-        self.assertEqual([t2], mockAST.rhs)
-        self.assertEqual(t1, mockAST.columns)
+        self.assertEqual(t1, mockAST.lhs)
+        self.assertEqual(t2, mockAST.rhs)
+        self.assertEqual([pe1, pe2], mockAST.columns)
 
 
     def test_p_lhs_pair_alternate_segment(self):
@@ -238,12 +241,15 @@ class parserTest(unittest.TestCase):
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
-        t1 = [PE('p','b',PE.ALTERNATIVE|PE.COMMIT), PE('d','b',PE.COMMIT)]
-        t2 = [PE('a')] + t1
+        pe1 = PE('p','b',PE.COMMIT)
+        pe2 = PE('d','b',PE.COMMIT)
+        t1 = [[pe1], [pe2]]
+        t2 = cross_product([[PE('a')]], t1)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([t1], mockAST.lhs)
-        self.assertEqual([t2], mockAST.rhs)
+        self.assertEqual(t1, mockAST.lhs)
+        self.assertEqual(t2, mockAST.rhs)
+        self.assertEqual([pe1, pe2], mockAST.columns)
 
 
     def test_p_lhs_pair_alternate_alternate(self):
@@ -252,12 +258,15 @@ class parserTest(unittest.TestCase):
         '''
         mockAST = MockAST()
         self.kparser.parse(data, mockAST)
-        t1 = [PE('p','b',PE.ALTERNATIVE|PE.COMMIT), PE('d','c',PE.COMMIT)]
-        t2 = [PE('a')] + t1
+        pe1 = PE('p','b',PE.COMMIT)
+        pe2 = PE('d','c',PE.COMMIT)
+        t1 = [[pe1], [pe2]]
+        t2 = cross_product([[PE('a')]], t1)
         
         self.assertEqual(0, mockAST.error)
-        self.assertEqual([t1], mockAST.lhs)
-        self.assertEqual([t2], mockAST.rhs)
+        self.assertEqual(t1, mockAST.lhs)
+        self.assertEqual(t2, mockAST.rhs)
+        self.assertEqual([pe1, pe2], mockAST.columns)
 
 
     def test_p_rule_only_occurs(self):
