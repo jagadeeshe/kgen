@@ -9,9 +9,9 @@ from kgen.datastructure import ParseTree
 from kgen.codegen_visitor import CodeGeneratorVisitor
 from kgen.tablebuilder_visitor import TableBuilderVisitor
 
-def compile(input, output, error, options):
+def compile(text, output, error, options):
     ''' compiles the two-level rule description into two-level finite state table
-    @input  - input string
+    @text  - text string
     @output - output stream where the compiled rules were written
     @error  - error stream where syntax error and symantic errors were written
     @option - compilation options
@@ -21,11 +21,11 @@ def compile(input, output, error, options):
     ptree = ParseTree()
     kparser = KgenParser(klexer, error, ptree)
 
-    ''' tokenize and parse the input string '''
-    input = input.decode(options.encoding)
-    kparser.parse(input)
+    ''' tokenize and parse the text string '''
+    text = text.decode(options.encoding)
+    kparser.parse(text)
     
-    ''' now @ptree will have complete parse tree for the input '''
+    ''' now @ptree will have complete parse tree for the text '''
     if error.getvalue() != '':
         # if you are here then there are syntax errors so return
         return
