@@ -11,7 +11,7 @@ from StringIO import StringIO
 C = PE.COMMIT
 S = PE.REPEAT
 
-from tests.driver import DataDrivenTest, DataRecord
+from tests.driver import DataRecord, generate_class
 
 class R(DataRecord):
     def __init__(self, _input, *rhs):
@@ -29,8 +29,7 @@ class R(DataRecord):
             new_rhs_list.append(new_rhs_row)
         DataRecord.__init__(self, _input, _input + "\n", new_rhs_list)
 
-@DataDrivenTest(
-[
+data_list = [
 R('RULE p:b => a _',
   ['a', ('p','b',C)]
 ),
@@ -173,11 +172,16 @@ RULE p:b <= V _ +:0
 ''',
   ['V',('p','@'),('+','0')]
 ),
-])
-def test_rules_parser(data):
+]
+
+
+def rules_parser_driver(data):
     klexer = KgenLexer()
     mockAST = MockAST()
     output = StringIO()
     kparser = KgenParser(klexer, output, mockAST)
     kparser.parse(data)
     return mockAST.rhs
+
+
+RulesParserTestCase = generate_class('RulesParserTestCase', rules_parser_driver, data_list)

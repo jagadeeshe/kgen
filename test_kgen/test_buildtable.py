@@ -9,7 +9,7 @@ from test_kgen.mock_ast import MockAST
 from StringIO import StringIO
 from kgen.buildtable import build_kgen_table
 import logging
-from tests.driver import DataDrivenTest, DataRecord
+from tests.driver import DataRecord, generate_class
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,7 +18,7 @@ class R(DataRecord):
         DataRecord.__init__(self, name, _input + "\n", expectation)
 
 
-@DataDrivenTest([
+data_list = [
 R('test_only_rule_case1',
 "RULE    p:b => _ +:0 m",
 '''
@@ -154,8 +154,9 @@ R('test_only_rule_case12',
 3: 0 1 1
 '''),
 
-])
-def test_buildtable(data):
+]
+
+def buildtable_driver(data):
     print data
 
     klexer = KgenLexer()
@@ -169,5 +170,4 @@ def test_buildtable(data):
     return "\n%s\n%s" % (columns, table,)
 
 
-if __name__ == "__main__":
-    test_buildtable()
+BuildTableTestCase = generate_class('BuildTableTestCase', buildtable_driver, data_list)

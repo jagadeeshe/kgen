@@ -4,14 +4,14 @@ Created on May 11, 2011
 @author: jagadeesh
 '''
 from kgen.tokenizer import KgenLexer
-from tests.driver import DataDrivenTest, DataRecord
+from tests.driver import DataRecord, generate_class
 
 class R(DataRecord):
     def __init__(self, _input, *args):
         DataRecord.__init__(self, _input, _input, list(args))
 
 
-@DataDrivenTest([
+data_list = [
     R('\n',          ('EOL', '\n')),
     R('SUBSET',      ('SUBSET', 'SUBSET')),
     R('C',           ('SUBSET_NAME', 'C')),
@@ -43,8 +43,13 @@ class R(DataRecord):
     R('\t',          ),
     R(';comment\n',  ('EOL', '\n')),
     R('!;kimmo\n',   ('KIMMO_COMMENT', ';kimmo'), ('EOL', '\n')),
-])
-def test_tokenizer(data):
+]
+
+
+def tokenizer_driver(data):
     klexer = KgenLexer()
     actual = [(actual.type, actual.value) for actual in klexer.generate_tokens(data)]
     return actual
+
+
+TokenizerTestCase = generate_class('TokenizerTestCase', tokenizer_driver, data_list)

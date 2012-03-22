@@ -10,14 +10,14 @@ from kgen.datastructure import ParseTree, NODE_TYPE_KIMMOCOMMENT,\
 from StringIO import StringIO
 from kgen.datastructure import NODE_TYPE_NEWLINE
 
-from tests.driver import DataDrivenTest, DataRecord
+from tests.driver import DataRecord, generate_class
 
 class R(DataRecord):
     def __init__(self, name, _input, *args):
         DataRecord.__init__(self, name, _input, list(args))
 
 
-@DataDrivenTest([
+data_list = [
 R('test_empty', ''),
 
 R('test_newline',
@@ -66,8 +66,9 @@ RULE p:b <= _ +:0 m
 ''',
 NODE_TYPE_NEWLINE, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_RULE, NODE_TYPE_KIMMOCOMMENT, NODE_TYPE_RULE),
 
-])
-def test_ParseTree(data):
+]
+
+def ParseTree_driver(data):
     klexer = KgenLexer()
     ptree = ParseTree()
     output = StringIO()
@@ -75,3 +76,5 @@ def test_ParseTree(data):
     kparser.parse(data, ptree)
     return [node.type for node in ptree]
 
+
+ParseTreeTestCase = generate_class('ParseTreeTestCase', ParseTree_driver, data_list)
