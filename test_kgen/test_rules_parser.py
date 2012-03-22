@@ -9,6 +9,7 @@ from test_kgen.mock_ast import MockAST
 from kgen.datastructure import PE
 from StringIO import StringIO
 C = PE.COMMIT
+S = PE.REPEAT
 
 from tests.driver import DataDrivenTest, DataRecord
 
@@ -18,6 +19,8 @@ class R(DataRecord):
         for rhs_row in rhs:
             new_rhs_row = []
             for el in rhs_row:
+                if el == '':
+                    el = ('',)
                 if type(el) == str:
                     el = tuple(el)
                 if type(el) <> tuple:
@@ -91,8 +94,11 @@ R('RULE {p, d}:{b, c} => a _',
 R('RULE p:b <= a:c _',
   [('a','c'), ('p','@')]
 ),
-R('RULE p:b <= a:c b:c _',
-  [('a','c'), ('b','c'), ('p','@')]
+R('RULE p:b <= a: _',
+  [('a','@'), ('p','@')]
+),
+R('RULE p:b <= a _',
+  ['a', ('p','@')]
 ),
 R('RULE p:b <= {a , b} _',
   ['a', ('p','@')],
@@ -105,6 +111,67 @@ R('RULE p:b <= c : {a , b} _',
 R('RULE p:b <= {a , b} : c _',
   [('a','c'), ('p','@')],
   [('b','c'), ('p','@')]
+),
+R('RULE p:b <= {a, b} : {c, d} _',
+  [('a','c'), ('p','@')],
+  [('b','d'), ('p','@')]
+),
+R('RULE p:b <= {a, b} :  _',
+  [('a','@'), ('p','@')],
+  [('b','@'), ('p','@')]
+),
+R('RULE p:b <= a:c * _',
+  [('a','c',S), ('p','@')]
+),
+R('RULE p:b <= a:c * b _',
+  [('a','c',S), 'b', ('p','@')]
+),
+R('RULE p:b <= a:c * d:e * _',
+  [('a','c',S), ('d','e',S), ('p','@')]
+),
+R('RULE p:b <= {a, b} : {c, d} * _',
+  [('a','c',S), ('p','@')],
+  [('b','d',S), ('p','@')]
+),
+R('RULE p:b <= a:c b:c _',
+  [('a','c'), ('b','c'), ('p','@')]
+),
+R('RULE p:b <= a b {c, d} e _',
+  ['a','b','c','e',('p','@')],
+  ['a','b','d','e',('p','@')]
+),
+R('RULE p:b <= [a | b] c _',
+  ['a','c',('p','@')],
+  ['b','c',('p','@')]
+),
+R('RULE p:b <= e [a | b] c _',
+  ['e','a','c',('p','@')],
+  ['e','b','c',('p','@')]
+),
+R('RULE p:b <= (a) _',
+  ['a',('p','@')],
+  ['',('p','@')]
+),
+R('RULE p:b <= (a) (b) _',
+  ['a','b',('p','@')],
+  ['a','',('p','@')],
+  ['','b',('p','@')],
+  ['','',('p','@')]
+),
+R('RULE p:b <= (a (b)) _',
+  ['a','b',('p','@')],
+  ['a','',('p','@')],
+  ['','',('p','@')]
+),
+R('RULE p:b <= a _ | b _',
+  ['a',('p','@')],
+  ['b',('p','@')]
+),
+R('''
+SUBSET V a e i o u
+RULE p:b <= V _ +:0
+''',
+  ['V',('p','@'),('+','0')]
 ),
 ])
 def test_rules_parser(data):
