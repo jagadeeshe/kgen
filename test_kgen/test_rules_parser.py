@@ -11,6 +11,12 @@ from StringIO import StringIO
 C = PE.COMMIT
 S = PE.REPEAT
 
+if PE.COMMIT <> 1:
+    raise Exception("PE.COMMIT is expected to be 1. if changed, then this test needs to be changed")
+
+if PE.REPEAT <> 2:
+    raise Exception("PE.REPEAT is expected to be 2. if changed, then this test needs to be changed")
+
 from tests.driver import DataRecord, generate_class
 
 class R(DataRecord):
@@ -22,7 +28,9 @@ class R(DataRecord):
                 if el == '':
                     el = ('',)
                 if type(el) == str:
-                    el = tuple(el)
+                    lst = el.split(':')
+                    lst = map(lambda x: int(x) if x.isdigit() else x, lst)
+                    el = tuple(lst)
                 if type(el) <> tuple:
                     raise Exception("unsupported type")
                 new_rhs_row.append(PE(*el))
@@ -31,146 +39,146 @@ class R(DataRecord):
 
 data_list = [
 R('RULE p:b => a _',
-  ['a', ('p','b',C)]
+  ['a','p:b:1']
 ),
 R('RULE p:b => a _ b',
-  ['a', ('p','b',C), 'b']
+  ['a','p:b:1','b']
 ),
 R('RULE p:b => _ a',
-  [('p','b',C), 'a']
+  ['p:b:1','a']
 ),
 R('RULE p:b <= a _',
-  ['a', ('p','@')]
+  ['a','p:@']
 ),
 R('RULE p:b <=  _ a',
-  [('p','@'), 'a']
+  ['p:@','a']
 ),
 R('RULE p:b <= a _ b',
-  ['a', ('p','@'), 'b']
+  ['a','p:@','b']
 ),
 R('RULE p:b /<= a _',
-  ['a', ('p','b')]
+  ['a','p:b']
 ),
 R('RULE p:b /<= _ a',
-  [('p','b'), 'a']
+  ['p:b','a']
 ),
 R('RULE p:b /<= a _ b',
-  ['a', ('p','b'), 'b']
+  ['a','p:b','b']
 ),
 R('RULE p:b <=> a _ ',
-  ['a', ('p','@')],
-  ['a', ('p','b',C)]
+  ['a','p:@'],
+  ['a','p:b:1']
 ),
 R('RULE p:b <=> _ a',
-  [('p','@'), 'a'],
-  [('p','b',C), 'a']
+  ['p:@','a'],
+  ['p:b:1','a']
 ),
 R('RULE p:b <=> a _ b',
-  ['a', ('p','@'), 'b'],
-  ['a', ('p','b',C), 'b']
+  ['a','p:@','b'],
+  ['a','p:b:1','b']
 ),
 R('RULE p:b => abc _',
-  ['a', 'b', 'c', ('p','b',C)]
+  ['a','b','c','p:b:1']
 ),
 R('RULE p:b => abc _ abcd',
-  ['a', 'b', 'c', ('p','b',C), 'a', 'b', 'c', 'd']
+  ['a','b','c','p:b:1','a','b','c','d']
 ),
 R('RULE p:b => _ abc',
-  [('p','b',C), 'a', 'b', 'c']
+  ['p:b:1','a','b','c']
 ),
 R('RULE p: {b, c} => a _',
-  ['a', ('p','b',C)],
-  ['a', ('p','c',C)]
+  ['a','p:b:1'],
+  ['a','p:c:1']
 ),
 R('RULE {p, d}:b => a _',
-  ['a', ('p','b',C)],
-  ['a', ('d','b',C)]
+  ['a','p:b:1'],
+  ['a','d:b:1']
 ),
 R('RULE {p, d}:{b, c} => a _',
-  ['a', ('p','b',C)],
-  ['a', ('d','c',C)]
+  ['a','p:b:1'],
+  ['a','d:c:1']
 ),
 R('RULE p:b <= a:c _',
-  [('a','c'), ('p','@')]
+  ['a:c','p:@']
 ),
 R('RULE p:b <= a: _',
-  [('a','@'), ('p','@')]
+  ['a:@','p:@']
 ),
 R('RULE p:b <= a _',
-  ['a', ('p','@')]
+  ['a','p:@']
 ),
 R('RULE p:b <= {a , b} _',
-  ['a', ('p','@')],
-  ['b', ('p','@')]
+  ['a','p:@'],
+  ['b','p:@']
 ),
 R('RULE p:b <= c : {a , b} _',
-  [('c','a'), ('p','@')],
-  [('c','b'), ('p','@')]
+  ['c:a','p:@'],
+  ['c:b','p:@']
 ),
 R('RULE p:b <= {a , b} : c _',
-  [('a','c'), ('p','@')],
-  [('b','c'), ('p','@')]
+  ['a:c','p:@'],
+  ['b:c','p:@']
 ),
 R('RULE p:b <= {a, b} : {c, d} _',
-  [('a','c'), ('p','@')],
-  [('b','d'), ('p','@')]
+  ['a:c','p:@'],
+  ['b:d','p:@']
 ),
 R('RULE p:b <= {a, b} :  _',
-  [('a','@'), ('p','@')],
-  [('b','@'), ('p','@')]
+  ['a:@','p:@'],
+  ['b:@','p:@']
 ),
 R('RULE p:b <= a:c * _',
-  [('a','c',S), ('p','@')]
+  ['a:c:2','p:@']
 ),
 R('RULE p:b <= a:c * b _',
-  [('a','c',S), 'b', ('p','@')]
+  ['a:c:2','b','p:@']
 ),
 R('RULE p:b <= a:c * d:e * _',
-  [('a','c',S), ('d','e',S), ('p','@')]
+  ['a:c:2','d:e:2','p:@']
 ),
 R('RULE p:b <= {a, b} : {c, d} * _',
-  [('a','c',S), ('p','@')],
-  [('b','d',S), ('p','@')]
+  ['a:c:2','p:@'],
+  ['b:d:2','p:@']
 ),
 R('RULE p:b <= a:c b:c _',
-  [('a','c'), ('b','c'), ('p','@')]
+  ['a:c','b:c','p:@']
 ),
 R('RULE p:b <= a b {c, d} e _',
-  ['a','b','c','e',('p','@')],
-  ['a','b','d','e',('p','@')]
+  ['a','b','c','e','p:@'],
+  ['a','b','d','e','p:@']
 ),
 R('RULE p:b <= [a | b] c _',
-  ['a','c',('p','@')],
-  ['b','c',('p','@')]
+  ['a','c','p:@'],
+  ['b','c','p:@']
 ),
 R('RULE p:b <= e [a | b] c _',
-  ['e','a','c',('p','@')],
-  ['e','b','c',('p','@')]
+  ['e','a','c','p:@'],
+  ['e','b','c','p:@']
 ),
 R('RULE p:b <= (a) _',
-  ['a',('p','@')],
-  [('p','@')]
+  ['a','p:@'],
+  ['p:@']
 ),
 R('RULE p:b <= (a) (b) _',
-  ['a','b',('p','@')],
-  ['a',('p','@')],
-  ['b',('p','@')],
-  [('p','@')]
+  ['a','b','p:@'],
+  ['a','p:@'],
+  ['b','p:@'],
+  ['p:@']
 ),
 R('RULE p:b <= (a (b)) _',
-  ['a','b',('p','@')],
-  ['a',('p','@')],
-  [('p','@')]
+  ['a','b','p:@'],
+  ['a','p:@'],
+  ['p:@']
 ),
 R('RULE p:b <= a _ | b _',
-  ['a',('p','@')],
-  ['b',('p','@')]
+  ['a','p:@'],
+  ['b','p:@']
 ),
 R('''
 SUBSET V a e i o u
 RULE p:b <= V _ +:0
 ''',
-  ['V',('p','@'),('+','0')]
+  ['V','p:@',('+','0')]
 ),
 R('RULE c:t <= x (z [ f | :g | h: ]) _',
   ['x','z','f',('c','@')],
