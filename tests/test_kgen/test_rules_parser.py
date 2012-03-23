@@ -38,6 +38,9 @@ class R(DataRecord):
         DataRecord.__init__(self, _input, _input + "\n", new_rhs_list)
 
 data_list = [
+#
+# only_occurs rules with left, right and both context
+#
 R('RULE p:b => a _',
   ['a','p:b:1']
 ),
@@ -47,6 +50,9 @@ R('RULE p:b => a _ b',
 R('RULE p:b => _ a',
   ['p:b:1','a']
 ),
+#
+# always_occurs rules with left, right and both context
+#
 R('RULE p:b <= a _',
   ['a','p:@']
 ),
@@ -56,6 +62,9 @@ R('RULE p:b <=  _ a',
 R('RULE p:b <= a _ b',
   ['a','p:@','b']
 ),
+#
+# never_occurs rules with left, right and both context
+#
 R('RULE p:b /<= a _',
   ['a','p:b']
 ),
@@ -65,6 +74,9 @@ R('RULE p:b /<= _ a',
 R('RULE p:b /<= a _ b',
   ['a','p:b','b']
 ),
+#
+# alwasy_and_only_occurs rules with left, right and both context
+#
 R('RULE p:b <=> a _ ',
   ['a','p:@'],
   ['a','p:b:1']
@@ -77,47 +89,43 @@ R('RULE p:b <=> a _ b',
   ['a','p:@','b'],
   ['a','p:b:1','b']
 ),
-R('RULE p:b => abc _',
-  ['a','b','c','p:b:1']
-),
-R('RULE p:b => abc _ abcd',
-  ['a','b','c','p:b:1','a','b','c','d']
-),
-R('RULE p:b => _ abc',
-  ['p:b:1','a','b','c']
-),
-R('RULE p: {b, c} => a _',
+#
+# special correspondence with alternate
+#
+R('RULE p : {b, c} => a _',
   ['a','p:b:1'],
   ['a','p:c:1']
 ),
-R('RULE {p, d}:b => a _',
+R('RULE {p, d} : b => a _',
   ['a','p:b:1'],
   ['a','d:b:1']
 ),
-R('RULE {p, d}:{b, c} => a _',
+R('RULE {p, d} : {b, c} => a _',
   ['a','p:b:1'],
   ['a','d:c:1']
 ),
+#
+# all possible segment_pair
+#
 R('RULE p:b <= a:c _',
   ['a:c','p:@']
 ),
 R('RULE p:b <= a: _',
   ['a:@','p:@']
 ),
+R('RULE p:b <= :a _',
+  ['@:a','p:@']
+),
 R('RULE p:b <= a _',
   ['a','p:@']
-),
-R('RULE p:b <= {a , b} _',
-  ['a','p:@'],
-  ['b','p:@']
-),
-R('RULE p:b <= c : {a , b} _',
-  ['c:a','p:@'],
-  ['c:b','p:@']
 ),
 R('RULE p:b <= {a , b} : c _',
   ['a:c','p:@'],
   ['b:c','p:@']
+),
+R('RULE p:b <= c : {a , b} _',
+  ['c:a','p:@'],
+  ['c:b','p:@']
 ),
 R('RULE p:b <= {a, b} : {c, d} _',
   ['a:c','p:@'],
@@ -127,6 +135,13 @@ R('RULE p:b <= {a, b} :  _',
   ['a:@','p:@'],
   ['b:@','p:@']
 ),
+R('RULE p:b <= {a , b} _',
+  ['a','p:@'],
+  ['b','p:@']
+),
+#
+# all possible segment_pair *
+#
 R('RULE p:b <= a:c * _',
   ['a:c:2','p:@']
 ),
@@ -185,6 +200,16 @@ R('RULE c:t <= x (z [ f | :g | h: ]) _',
   ['x','z',('@','g'),('c','@')],
   ['x','z',('h','@'),('c','@')],
   ['x',('c','@')],
+),
+
+R('RULE p:b => abc _',
+  ['a','b','c','p:b:1']
+),
+R('RULE p:b => abc _ abcd',
+  ['a','b','c','p:b:1','a','b','c','d']
+),
+R('RULE p:b => _ abc',
+  ['p:b:1','a','b','c']
 ),
 ]
 
