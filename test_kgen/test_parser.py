@@ -525,38 +525,6 @@ class parserTest(unittest.TestCase):
         self.assertEqual([[PE('e'), PE('a'), PE('c')], [PE('e'), PE('b'), PE('c')]], mockAST.lc)
 
 
-    def test_p_segment_pair_optional_list(self):
-        data = '''RULE 
-            p:b <= (a) _
-        '''
-        mockAST = MockAST()
-        self.kparser.parse(data, mockAST)
-        
-        self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a')], [PE('')]], mockAST.lc)
-
-
-    def test_p_segment_pair_optional_list_long(self):
-        data = '''RULE 
-            p:b <= (a) (b) _
-        '''
-        mockAST = MockAST()
-        self.kparser.parse(data, mockAST)
-        
-        self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a'), PE('b')], [PE('a'), PE('')], [PE(''), PE('b')], [PE(''), PE('')]], mockAST.lc)
-
-    def test_p_segment_pair_optional_list_long2(self):
-        data = '''RULE 
-            p:b <= (a (b)) _
-        '''
-        mockAST = MockAST()
-        self.kparser.parse(data, mockAST)
-        
-        self.assertEqual(0, mockAST.error)
-        self.assertEqual([[PE('a'), PE('b')], [PE('a'), PE('')], [PE('')]], mockAST.lc)
-
-
     def test_p_rhs_item_only_left_context(self):
         data = '''RULE 
             p:b <= a _

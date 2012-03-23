@@ -56,9 +56,9 @@ def cross_product(list1, list2):
 
 def add_optional_element(list1):
     for pe_list in list1:
-        if pe_list[0] == PE(''):
+        if len(pe_list) == 0:
             return
-    list1.append([PE('')])
+    list1.append([])
 
 def mark_alternate(alt_list):
     itemlist = alt_list[0]
