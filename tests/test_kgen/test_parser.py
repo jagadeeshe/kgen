@@ -6,7 +6,7 @@ Created on May 11, 2011
 import unittest
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
-from test_kgen.mock_ast import MockAST
+from mock_ast import MockAST
 from kgen.datastructure import PE
 from StringIO import StringIO
 from kgen.core import cross_product

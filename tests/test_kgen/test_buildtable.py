@@ -5,7 +5,7 @@ Created on May 30, 2011
 '''
 from kgen.tokenizer import KgenLexer
 from kgen.parser import KgenParser
-from test_kgen.mock_ast import MockAST
+from mock_ast import MockAST
 from StringIO import StringIO
 from kgen.buildtable import build_kgen_table
 import logging
